@@ -1,0 +1,5194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FLEURI</title>
+  <style>
+    :root {
+      --pink-1: #ffe9ef;
+      --pink-2: #ffd4df;
+      --pink-3: #f5a3b8;
+      --pink-4: #e87892;
+      --red: #d94c67;
+      --dark: #3e3150;
+      --text: #493b55;
+      --muted: #756779;
+      --light: #fff8eb;
+      --white: #ffffff;
+      --navy: #63477a;
+      --green: #4d8b65;
+      --shadow: rgba(82, 54, 82, 0.12);
+      --cream: #fff8eb;
+      --olive: #4d8b65;
+      --olive-dark: #35684c;
+      --terracotta: #d65370;
+      --blush: #ffe0e5;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f6f3f0;
+      color: var(--text);
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .page-shell {
+      width: 100%;
+      min-height: 100vh;
+      background: #f5f1f0;
+    }
+
+    .top-strip {
+      background: #f19494;
+      color: #fff;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+    }
+
+    .top-strip .center-text {
+      text-align: center;
+      width: 100%;
+    }
+
+    .top-strip .account-links {
+      position: absolute;
+      right: 26px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      gap: 14px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .account-action {
+      border: 0;
+      padding: 0;
+      background: transparent;
+      color: inherit;
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .account-action:hover,
+    .account-action:focus-visible {
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .site-header {
+      background: #fff;
+      border-bottom: 1px solid #ece2df;
+      padding: 0 22px;
+    }
+
+    .header-inner {
+      max-width: 1200px;
+      height: 108px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 210px;
+    }
+
+    .brand-mark {
+      display: block;
+      width: 64px;
+      height: 96px;
+      object-fit: contain;
+      flex: 0 0 auto;
+    }
+
+    .brand-text {
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .brand-text small {
+      display: block;
+      font-size: 10px;
+      color: #6d7a8f;
+      letter-spacing: 0.4px;
+      font-weight: 700;
+    }
+
+    .deliver-box {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: #f7f7f7;
+      border: 1px solid #e7e7e7;
+      border-radius: 6px;
+      padding: 8px 12px;
+      min-width: 230px;
+      font-size: 12px;
+      color: #4a4a4a;
+      font-weight: 700;
+    }
+
+    .deliver-box .label {
+      color: #6d6d6d;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .deliver-box .icon {
+      font-size: 16px;
+      color: #5899ff;
+    }
+
+    .deliver-box {
+      cursor: pointer;
+    }
+
+    .deliver-box:focus-visible,
+    .location-item:focus-visible,
+    .location-close:focus-visible,
+    .location-search:focus-visible {
+      outline: 2px solid rgba(29, 68, 162, 0.35);
+      outline-offset: 2px;
+    }
+
+    .location-modal {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      background: rgba(32, 25, 24, 0.1);
+      padding: 0;
+      z-index: 1500;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .location-modal.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .location-panel {
+      width: min(760px, calc(100vw - 60px));
+      background: #f5b7ac;
+      border: 1px solid rgba(255,255,255,0.8);
+      border-radius: 4px;
+      padding: 28px 28px 18px;
+      box-shadow: 0 14px 30px rgba(0,0,0,0.12);
+      margin-top: 30px;
+      position: relative;
+    }
+
+    .location-close {
+      position: absolute;
+      right: 18px;
+      top: 18px;
+      border: 0;
+      background: transparent;
+      color: #fff;
+      font-size: 42px;
+      line-height: 1;
+      cursor: pointer;
+      opacity: 0.9;
+    }
+
+    .location-panel h2 {
+      margin: 0 0 22px;
+      font-size: clamp(2rem, 3.2vw, 3.1rem);
+      line-height: 1.2;
+      font-weight: 800;
+      color: #f4f4f4;
+      letter-spacing: -0.03em;
+      text-align: center;
+    }
+
+    .location-help {
+      margin: -10px 0 18px;
+      color: rgba(255,255,255,0.95);
+      text-align: center;
+    }
+
+    .account-dialog {
+      width: min(420px, calc(100vw - 32px));
+      border: 1px solid #ebddda;
+      border-radius: 12px;
+      padding: 26px;
+      color: #2d2d2d;
+      box-shadow: 0 20px 50px rgba(49, 31, 27, 0.2);
+      font-family: inherit;
+    }
+
+    .account-dialog::backdrop {
+      background: rgba(32, 25, 24, 0.48);
+    }
+
+    .account-dialog h2 {
+      margin: 0 36px 12px 0;
+      font-size: 22px;
+    }
+
+    .account-dialog p {
+      margin: 0 0 22px;
+      color: #5d5653;
+      line-height: 1.5;
+    }
+
+    .account-form {
+      display: grid;
+      gap: 12px;
+      margin: 18px 0;
+    }
+
+    .account-form label {
+      display: grid;
+      gap: 6px;
+      color: #514846;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .account-form input {
+      width: 100%;
+      min-height: 42px;
+      border: 1px solid #e8cfca;
+      border-radius: 8px;
+      padding: 0 11px;
+      font: inherit;
+    }
+
+    .account-form input:focus {
+      outline: 2px solid rgba(239, 144, 145, 0.35);
+    }
+
+    .account-form button,
+    .account-secondary-action,
+    .order-status {
+      border: 0;
+      border-radius: 8px;
+      padding: 10px 12px;
+      background: #ef9091;
+      color: #fff;
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .account-secondary-action {
+      background: #f5e9e6;
+      color: #594844;
+    }
+
+    .account-notice {
+      margin: 12px 0;
+      color: #645957;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .account-error {
+      color: #a52e37;
+      font-weight: 700;
+    }
+
+    .cashier-summary {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      margin: 16px 0;
+    }
+
+    .cashier-stat {
+      border: 1px solid #f0e1de;
+      border-radius: 8px;
+      padding: 10px 6px;
+      text-align: center;
+      background: #fff9f7;
+    }
+
+    .cashier-stat strong,
+    .cashier-stat span {
+      display: block;
+    }
+
+    .cashier-stat strong {
+      font-size: 16px;
+    }
+
+    .cashier-stat span {
+      margin-top: 3px;
+      color: #776d69;
+      font-size: 11px;
+    }
+
+    .cashier-orders {
+      display: grid;
+      gap: 10px;
+      max-height: 48vh;
+      overflow-y: auto;
+    }
+
+    .cashier-order {
+      border: 1px solid #f0e1de;
+      border-radius: 8px;
+      padding: 12px;
+      background: #fff;
+    }
+
+    .cashier-order-heading {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .cashier-order p {
+      margin: 7px 0;
+      color: #645957;
+      font-size: 12px;
+    }
+
+    .order-status {
+      width: 100%;
+      background: #f5e9e6;
+      color: #594844;
+    }
+
+    .account-dialog-close {
+      position: absolute;
+      top: 12px;
+      right: 14px;
+      border: 0;
+      background: transparent;
+      color: #a16b62;
+      font-size: 26px;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .account-dialog-done {
+      display: block;
+      width: 100%;
+      border: 0;
+      border-radius: 999px;
+      padding: 11px 16px;
+      background: #ef9091;
+      color: #fff;
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .location-search-wrap {
+      position: relative;
+      margin: 0 auto 20px;
+      width: min(100%, 680px);
+    }
+
+    .location-search {
+      width: 100%;
+      height: 52px;
+      border: 1px solid rgba(255,255,255,0.8);
+      background: rgba(255,255,255,0.85);
+      border-radius: 12px;
+      padding: 0 52px 0 18px;
+      font-size: 1.2rem;
+      color: #333;
+      font-family: inherit;
+    }
+
+    .location-search::placeholder {
+      color: #7c7c7c;
+      font-size: 1.1rem;
+    }
+
+    .search-icon {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #d9d9d9;
+      color: #5d5d5d;
+      display: grid;
+      place-items: center;
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+
+    .location-list {
+      width: min(100%, 500px);
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      max-height: min(520px, 45vh);
+      overflow-y: auto;
+      padding: 12px 0 10px;
+    }
+
+    .location-item {
+      width: 100%;
+      border: 0;
+      background: transparent;
+      color: rgba(255,255,255,0.95);
+      font-size: clamp(1.4rem, 2vw, 2rem);
+      line-height: 1.4;
+      padding: 7px 10px;
+      text-align: center;
+      cursor: pointer;
+      font-family: inherit;
+      font-weight: 500;
+    }
+
+    .location-item:hover {
+      background: rgba(255,255,255,0.08);
+    }
+
+    .site-nav {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      flex-wrap: wrap;
+      justify-content: center;
+      flex: 1;
+    }
+
+    .site-nav button,
+    .site-nav a {
+      border: 0;
+      background: transparent;
+      font: inherit;
+      font-size: 12px;
+      color: #555;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+      white-space: nowrap;
+      padding: 8px 6px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .site-nav button:hover,
+    .site-nav button:focus-visible,
+    .site-nav a:hover,
+    .site-nav a:focus-visible {
+      background: rgba(239, 144, 145, 0.12);
+      color: #2b2b2b;
+      outline: none;
+    }
+
+    .site-nav button.active,
+    .site-nav a.active {
+      color: #2b2b2b;
+      background: rgba(239, 144, 145, 0.18);
+    }
+
+    .product-menu-wrap {
+      position: relative;
+    }
+
+    .products-menu-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .products-menu-toggle::after {
+      width: 7px;
+      height: 7px;
+      border-right: 2px solid currentColor;
+      border-bottom: 2px solid currentColor;
+      content: "";
+      transform: translateY(-2px) rotate(45deg);
+      transition: transform 0.18s ease;
+    }
+
+    .product-menu-wrap.is-open .products-menu-toggle::after {
+      transform: translateY(2px) rotate(225deg);
+    }
+
+    .products-menu {
+      position: absolute;
+      top: calc(100% + 12px);
+      left: 50%;
+      z-index: 1200;
+      display: none;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 26px;
+      width: min(680px, calc(100vw - 40px));
+      padding: 24px;
+      border: 1px solid #e5dfc9;
+      border-radius: 12px;
+      background: #fffdf6;
+      box-shadow: 0 18px 38px rgba(67, 63, 43, 0.18);
+      transform: translateX(-50%);
+    }
+
+    .product-menu-wrap.is-open .products-menu {
+      display: grid;
+    }
+
+    .products-menu-group h2 {
+      margin: 0 0 12px;
+      color: var(--olive-dark);
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .site-nav .products-menu-group .nav-link {
+      display: block;
+      width: 100%;
+      border-radius: 6px;
+      padding: 8px 10px;
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 500;
+      text-align: left;
+      white-space: normal;
+    }
+
+    .products-menu-group .nav-link:hover,
+    .products-menu-group .nav-link:focus-visible,
+    .products-menu-group .nav-link.active {
+      background: #f1ecdc;
+      color: var(--olive-dark);
+    }
+
+    .help-center-wrap {
+      position: relative;
+    }
+
+    .help-center-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .help-center-toggle::after {
+      width: 7px;
+      height: 7px;
+      border-right: 2px solid currentColor;
+      border-bottom: 2px solid currentColor;
+      content: "";
+      transform: translateY(-2px) rotate(45deg);
+      transition: transform 0.18s ease;
+    }
+
+    .help-center-wrap.is-open .help-center-toggle::after {
+      transform: translateY(2px) rotate(225deg);
+    }
+
+    .help-center-menu {
+      position: absolute;
+      top: calc(100% + 12px);
+      left: 50%;
+      z-index: 1200;
+      display: none;
+      width: min(960px, calc(100vw - 32px));
+      max-height: min(78vh, 720px);
+      overflow-y: auto;
+      border: 1px solid #e5dfc9;
+      border-radius: 16px;
+      background: #fffdf6;
+      box-shadow: 0 18px 38px rgba(67, 63, 43, 0.2);
+      transform: translateX(-50%);
+    }
+
+    .help-center-wrap.is-open .help-center-menu {
+      display: block;
+    }
+
+    .help-center-hero {
+      padding: 32px clamp(18px, 4vw, 44px) 42px;
+      border-radius: 16px 16px 0 0;
+      background: #f0eadb;
+      text-align: center;
+    }
+
+    .help-center-welcome {
+      margin: 0 0 8px;
+      color: var(--terracotta);
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .help-center-hero h2 {
+      margin: 0;
+      color: var(--olive-dark);
+      font-size: clamp(26px, 4vw, 38px);
+    }
+
+    .help-center-subtitle {
+      margin: 8px 0 20px;
+      color: var(--text);
+      font-size: 14px;
+    }
+
+    .help-search-form {
+      display: flex;
+      width: min(650px, 100%);
+      gap: 10px;
+      margin: 0 auto;
+    }
+
+    .help-search-form input {
+      flex: 1;
+      min-width: 0;
+      height: 48px;
+      border: 2px solid var(--olive);
+      border-radius: 999px;
+      padding: 0 18px;
+      background: #fffdf6;
+      color: var(--text);
+      font: inherit;
+      font-size: 15px;
+    }
+
+    .help-search-form input:focus {
+      outline: 3px solid rgba(111, 115, 81, 0.2);
+    }
+
+    .help-search-form button {
+      min-width: 112px;
+      border: 0;
+      border-radius: 999px;
+      padding: 0 22px;
+      background: var(--terracotta);
+      color: #fff;
+      font: inherit;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .help-search-form button:hover,
+    .help-search-form button:focus-visible {
+      background: var(--olive-dark);
+    }
+
+    .help-popular-searches {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 16px;
+      color: var(--olive-dark);
+      font-size: 12px;
+    }
+
+    .help-popular-searches button {
+      border: 1px solid #e5dfc9;
+      border-radius: 999px;
+      padding: 6px 11px;
+      background: rgba(255, 253, 246, 0.7);
+      color: var(--text);
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .help-popular-searches button:hover,
+    .help-popular-searches button:focus-visible {
+      border-color: var(--olive);
+      background: #fffdf6;
+    }
+
+    .help-topic-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+      padding: 0 clamp(16px, 3vw, 32px) 28px;
+      margin-top: -18px;
+    }
+
+    .help-topic {
+      display: flex;
+      min-height: 190px;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      border: 1.5px solid #ded6b9;
+      border-radius: 12px;
+      padding: 20px 14px;
+      background: #fffdf6;
+      color: var(--text);
+      text-align: center;
+      cursor: pointer;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+    }
+
+    .site-nav .help-topic {
+      display: flex;
+      min-height: 190px;
+      flex: initial;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      border: 1.5px solid #ded6b9;
+      border-radius: 12px;
+      padding: 20px 14px;
+      background: #fffdf6;
+      color: var(--text);
+      font: inherit;
+      font-size: 14px;
+      letter-spacing: normal;
+      text-align: center;
+      text-transform: none;
+      white-space: normal;
+    }
+
+    .help-topic:hover,
+    .help-topic:focus-visible {
+      border-color: var(--olive);
+      box-shadow: 0 10px 22px rgba(67, 63, 43, 0.12);
+      outline: none;
+      transform: translateY(-2px);
+    }
+
+    .site-nav .help-topic:hover,
+    .site-nav .help-topic:focus-visible {
+      background: #fffdf6;
+      color: var(--text);
+    }
+
+    .help-topic[hidden],
+    .help-no-results[hidden] {
+      display: none;
+    }
+
+    .help-topic-icon {
+      display: grid;
+      width: 34px;
+      height: 34px;
+      place-items: center;
+      margin-bottom: 10px;
+      color: var(--olive);
+    }
+
+    .help-topic-icon svg {
+      width: 28px;
+      height: 28px;
+      fill: none;
+      stroke: currentColor;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-width: 1.8;
+    }
+
+    .help-topic strong {
+      margin-bottom: 6px;
+      color: var(--olive-dark);
+      font-size: 15px;
+      line-height: 1.35;
+    }
+
+    .help-topic span:last-child {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .help-no-results {
+      margin: 0;
+      padding: 0 20px 24px;
+      color: var(--muted);
+      font-size: 14px;
+      text-align: center;
+    }
+
+    .header-tools {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 150px;
+      justify-content: flex-end;
+    }
+
+    .mini-icon {
+      width: 32px;
+      height: 32px;
+      border: 0;
+      border-radius: 50%;
+      background: #f5f5f5;
+      display: grid;
+      place-items: center;
+      color: #4c4c4c;
+      font-size: 17px;
+      position: relative;
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .mini-icon:hover,
+    .mini-icon:focus-visible {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 18px rgba(45, 45, 45, 0.08);
+      outline: none;
+    }
+
+    .mini-icon .badge {
+      position: absolute;
+      right: -4px;
+      top: -3px;
+      width: 17px;
+      height: 17px;
+      border-radius: 50%;
+      background: #ef9091;
+      color: white;
+      font-size: 10px;
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+    }
+
+    .search-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(21, 19, 19, 0.18);
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 70px 16px 16px;
+      z-index: 1500;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .search-modal.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .search-panel {
+      width: min(560px, 100%);
+      background: #fffaf9;
+      border: 1px solid #f1dfe0;
+      border-radius: 18px;
+      box-shadow: 0 20px 52px rgba(52, 35, 31, 0.18);
+      padding: 18px 18px 12px;
+      position: relative;
+    }
+
+    .search-close {
+      position: absolute;
+      right: 14px;
+      top: 12px;
+      border: 0;
+      background: transparent;
+      color: #a16b62;
+      font-size: 32px;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .search-label {
+      display: block;
+      font-size: 12px;
+      text-transform: uppercase;
+      color: #7b5d5b;
+      letter-spacing: 0.12em;
+      font-weight: 800;
+      margin: 8px 0 10px;
+    }
+
+    .search-input {
+      width: 100%;
+      border: 1px solid #efc9c6;
+      border-radius: 10px;
+      height: 46px;
+      padding: 0 14px;
+      font: inherit;
+      font-size: 15px;
+      color: #2b2b2b;
+      background: #fff;
+    }
+
+    .search-input:focus {
+      outline: 2px solid rgba(239, 144, 145, 0.35);
+      outline-offset: 1px;
+    }
+
+    .search-results {
+      margin-top: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 280px;
+      overflow: auto;
+      padding-right: 4px;
+    }
+
+    .search-result {
+      display: block;
+      width: 100%;
+      border: 1px solid #f2e5e3;
+      background: #fff;
+      border-radius: 10px;
+      padding: 10px 12px;
+      text-align: left;
+      cursor: pointer;
+      font: inherit;
+      font-weight: 700;
+      color: #3a3a3a;
+    }
+
+    .search-result:hover,
+    .search-result:focus-visible {
+      background: #fff5f3;
+      outline: none;
+    }
+
+    .search-empty {
+      color: #716565;
+      padding: 12px 2px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .product-card[hidden] {
+      display: none !important;
+    }
+
+    .no-results {
+      display: none;
+      text-align: center;
+      padding: 28px 12px 4px;
+      color: #655b5b;
+      font-weight: 700;
+      font-size: 15px;
+    }
+
+    .no-results.visible {
+      display: block;
+    }
+
+    .promo-wrap {
+      background: #f5d5d0;
+      padding: 0;
+      border-bottom: 1px solid #e5c7c3;
+    }
+
+    .promo-grid {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1.7fr 1.1fr 0.75fr;
+      gap: 22px;
+      align-items: stretch;
+      padding: 18px 12px 8px;
+    }
+
+    .hero-card {
+      background: #f3d9dd;
+      border-radius: 14px;
+      min-height: 240px;
+      position: relative;
+      overflow: hidden;
+      padding: 26px 18px 18px 18px;
+      display: flex;
+      align-items: center;
+      border: 1px solid rgba(128, 84, 84, 0.08);
+    }
+
+    .hero-card-link {
+      display: flex;
+      color: inherit;
+      text-decoration: none;
+      cursor: pointer;
+      transition: box-shadow 0.18s ease, transform 0.18s ease;
+    }
+
+    .hero-card-link:hover,
+    .hero-card-link:focus-visible {
+      box-shadow: 0 12px 28px rgba(163, 74, 111, 0.18);
+      transform: translateY(-2px);
+      outline: 3px solid rgba(214, 83, 112, 0.42);
+      outline-offset: 3px;
+    }
+
+    .hero-card-link:focus-visible {
+      outline-offset: 4px;
+    }
+
+    .hero-content {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      width: 100%;
+      justify-content: space-between;
+    }
+
+    .hero-copy {
+      max-width: 420px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero-copy .small-label {
+      display: inline-block;
+      margin-bottom: 8px;
+      font-size: 12px;
+      background: #fff;
+      color: #d95a6a;
+      border-radius: 999px;
+      padding: 8px 14px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .hero-copy h1 {
+      font-size: clamp(2.2rem, 3vw, 4rem);
+      line-height: 0.94;
+      letter-spacing: -2px;
+      color: #e6465f;
+      margin: 0;
+      text-transform: uppercase;
+      font-weight: 900;
+    }
+
+    .hero-visual {
+      position: relative;
+      width: 260px;
+      min-width: 220px;
+      height: 180px;
+      flex-shrink: 0;
+      margin-right: 16px;
+    }
+
+    .hero-product-image {
+      display: block;
+      width: 100%;
+      height: 100%;
+      border: 6px solid rgba(255, 255, 255, 0.8);
+      border-radius: 24px 42px 24px 42px;
+      padding: 8px;
+      background: linear-gradient(145deg, #fff8de, #fce0e9 58%, #e5f4e5);
+      box-shadow: 0 12px 28px rgba(94, 57, 83, 0.18);
+      object-fit: contain;
+      transform: rotate(3deg);
+    }
+
+    .balloon {
+      position: absolute;
+      width: 112px;
+      height: 112px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #fff, #f8d3dd 60%, #f4b7d0 100%);
+      border: 4px solid rgba(246, 124, 155, 0.7);
+      box-shadow: inset 0 0 22px rgba(255,255,255,0.5);
+      right: 42px;
+      top: 11px;
+      display: grid;
+      place-items: center;
+      color: #d75d7d;
+      font-size: 18px;
+      font-weight: 700;
+      text-transform: uppercase;
+      transform: rotate(-8deg);
+    }
+
+    .balloon::after {
+      content: "";
+      position: absolute;
+      width: 14px;
+      height: 20px;
+      background: linear-gradient(#ffb2b6, #ef8ca5);
+      bottom: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-radius: 8px;
+    }
+
+    .flower-bunch {
+      position: absolute;
+      right: 6px;
+      bottom: 8px;
+      width: 190px;
+      height: 120px;
+      border-radius: 50% 50% 0 0;
+      background: linear-gradient(180deg, rgba(255,255,255,0.2), rgba(255,255,255,0));
+    }
+
+    .flower-bunch::before,
+    .flower-bunch::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      width: 120px;
+      height: 100px;
+      border-radius: 34% 66% 28% 72% / 38% 45% 55% 62%;
+      background: linear-gradient(135deg, #f6d9eb, #e7c1d8 65%, #f4c4e7);
+      box-shadow: 0 0 0 5px rgba(255,255,255,0.45);
+      transform: rotate(-12deg);
+      left: 28px;
+    }
+
+    .flower-bunch::after {
+      left: 92px;
+      width: 100px;
+      height: 88px;
+      transform: rotate(14deg);
+      background: linear-gradient(135deg, #f0e1b8, #d7e873 65%, #f6ecb1);
+    }
+
+    .mini-card {
+      background: #f9e5e1;
+      border: 1px solid rgba(0,0,0,0.04);
+      border-radius: 10px;
+      padding: 12px 12px 10px;
+      box-shadow: 0 8px 12px rgba(191, 122, 122, 0.08);
+      min-height: 170px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .mini-card img {
+      width: 100%;
+      height: 110px;
+      object-fit: cover;
+      object-position: center 48%;
+      border-radius: 8px;
+      margin-bottom: 8px;
+    }
+
+    .mini-card .cta {
+      display: block;
+      background: #f3a3a3;
+      border: none;
+      color: white;
+      font-weight: 700;
+      border-radius: 4px;
+      padding: 8px 10px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+    }
+
+    .feature-col {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      justify-content: center;
+    }
+
+    .side-stack {
+      background: #f9e8e7;
+      border-radius: 10px;
+      padding: 10px 10px 8px;
+      border: 1px solid rgba(160, 110, 110, 0.08);
+      box-shadow: 0 8px 12px rgba(0,0,0,0.03);
+    }
+
+    .side-stack-link {
+      display: block;
+      position: relative;
+      overflow: hidden;
+      color: inherit;
+      text-decoration: none;
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .side-stack-link:hover,
+    .side-stack-link:focus-visible {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 22px rgba(163, 74, 111, 0.2);
+      outline: 3px solid rgba(214, 83, 112, 0.4);
+      outline-offset: 2px;
+    }
+
+    .side-stack img {
+      width: 100%;
+      height: 110px;
+      object-fit: cover;
+      object-position: center 48%;
+      border-radius: 8px;
+    }
+
+    .side-stack-link img {
+      transition: transform 0.2s ease;
+    }
+
+    .side-stack-link:hover img,
+    .side-stack-link:focus-visible img {
+      transform: scale(1.04);
+    }
+
+    .side-stack-label {
+      position: absolute;
+      right: 16px;
+      bottom: 16px;
+      left: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      border-radius: 999px;
+      padding: 8px 10px;
+      background: rgba(255, 250, 245, 0.94);
+      color: #684778;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0.04em;
+      text-align: center;
+      text-shadow: 0 1px 0 #fff;
+    }
+
+    .products-panel {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 18px 16px 40px;
+    }
+
+    .products-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 22px;
+      padding-top: 16px;
+      border-top: 1px solid #ddd;
+    }
+
+    .products-header h2 {
+      margin: 0;
+      font-size: 28px;
+      color: #373737;
+      font-weight: 800;
+    }
+
+    .products-header .more-link {
+      color: #ea7e87;
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .product-description {
+      margin-top: 12px;
+      border-top: 1px solid #f0e4df;
+      padding-top: 8px;
+      text-align: left;
+    }
+
+    .product-description summary {
+      color: #a85e61;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 800;
+      list-style-position: inside;
+    }
+
+    .product-description p {
+      margin: 8px 0 0;
+      color: #625a57;
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    .product-description strong {
+      color: #3c3634;
+    }
+
+    .customer-reviews {
+      margin-top: 42px;
+      padding-top: 24px;
+      border-top: 1px solid #ddd;
+    }
+
+    .customer-reviews h2 {
+      margin: 0 0 8px;
+      color: #373737;
+      font-size: 28px;
+    }
+
+    .reviews-intro {
+      margin: 0 0 18px;
+      color: #716565;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .review-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .review-card {
+      border: 1px solid #f0e4df;
+      border-radius: 12px;
+      padding: 18px;
+      background: rgba(255, 255, 255, 0.58);
+    }
+
+    .review-card blockquote {
+      margin: 0;
+      color: #443c39;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .review-author {
+      display: block;
+      margin-top: 14px;
+      color: #8b6862;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .review-story-label {
+      display: inline-block;
+      margin-bottom: 10px;
+      border-radius: 999px;
+      padding: 5px 9px;
+      background: #f9e5e1;
+      color: #a85e61;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .review-gallery {
+      margin-top: 28px;
+    }
+
+    .review-gallery h3 {
+      margin: 0 0 14px;
+      color: #373737;
+      font-size: 20px;
+    }
+
+    .review-photo-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .review-photo {
+      overflow: hidden;
+      margin: 0;
+      border: 1px solid #f0e4df;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.72);
+    }
+
+    .review-photo img {
+      display: block;
+      width: 100%;
+      height: 250px;
+      object-fit: contain;
+      background: #f4f1f0;
+    }
+
+    .review-photo figcaption {
+      padding: 12px 14px;
+      color: #625a57;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .contact-us-btn {
+      position: fixed;
+      right: 24px;
+      bottom: 24px;
+      z-index: 900;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      border: 0;
+      border-radius: 999px;
+      padding: 14px 22px;
+      background: var(--terracotta);
+      color: #fff;
+      box-shadow: 0 8px 22px rgba(72, 50, 38, 0.28);
+      font-family: inherit;
+      font-size: 16px;
+      font-weight: 800;
+      text-align: center;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+    }
+
+    .contact-us-btn:hover,
+    .contact-us-btn:focus-visible {
+      background: var(--olive);
+      box-shadow: 0 10px 26px rgba(72, 50, 38, 0.34);
+      transform: translateY(-1px);
+    }
+
+    .contact-us-btn svg {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+      fill: currentColor;
+    }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(170px, 1fr));
+      gap: 18px;
+    }
+
+    .product-grid[hidden],
+    .customer-reviews[hidden],
+    .gourmet-coming-soon[hidden],
+    .products-header .more-link[hidden] {
+      display: none;
+    }
+
+    .site-footer {
+      padding: 42px max(16px, calc((100% - 1168px) / 2)) 24px;
+      background: var(--olive);
+      color: var(--cream);
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1.35fr repeat(3, minmax(0, 1fr));
+      gap: 36px;
+      max-width: 1168px;
+      margin: 0 auto;
+    }
+
+    .our-story-card {
+      max-width: 1168px;
+      margin: 0 auto 36px;
+      border: 1px solid rgba(255, 248, 235, 0.35);
+      border-radius: 24px;
+      padding: clamp(28px, 5vw, 56px) clamp(22px, 8vw, 100px);
+      background: var(--olive-dark);
+      color: var(--cream);
+      box-shadow: 0 16px 34px var(--shadow);
+      text-align: center;
+    }
+
+    .our-story-eyebrow {
+      margin: 0 0 14px;
+      color: var(--pink-2);
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .our-story-card h2 {
+      margin: 0 0 20px;
+      color: var(--cream);
+      font-size: clamp(28px, 4vw, 38px);
+      line-height: 1.15;
+    }
+
+    .our-story-copy {
+      max-width: 850px;
+      margin: 0 auto;
+      color: var(--cream);
+      font-size: 15px;
+      line-height: 1.8;
+    }
+
+    .our-story-copy p {
+      margin: 0;
+    }
+
+    .our-story-copy p + p {
+      margin-top: 14px;
+    }
+
+    .our-story-details {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+      gap: 28px;
+      max-width: 850px;
+      margin: 32px auto 0;
+      border-top: 1px solid rgba(255, 248, 235, 0.3);
+      padding-top: 26px;
+      text-align: left;
+    }
+
+    .our-story-details h3 {
+      margin: 0 0 10px;
+      color: var(--pink-2);
+      font-size: 20px;
+    }
+
+    .our-story-details p {
+      margin: 0;
+      color: var(--cream);
+      font-size: 15px;
+      line-height: 1.8;
+    }
+
+    .footer-brand h2 {
+      margin: 0 0 10px;
+      color: #fffdf6;
+      font-size: 24px;
+    }
+
+    .footer-brand p,
+    .footer-contact p,
+    .footer-column > p {
+      margin: 0;
+      color: var(--cream);
+      font-size: 14px;
+      line-height: 1.65;
+    }
+
+    .footer-social-icons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .footer-social-icons span {
+      display: grid;
+      width: 28px;
+      height: 28px;
+      place-items: center;
+      border-radius: 50%;
+      background: rgba(39, 42, 29, 0.42);
+      color: #fffdf6;
+    }
+
+    .footer-social-icons svg {
+      width: 15px;
+      height: 15px;
+      fill: currentColor;
+    }
+
+    .footer-column h3 {
+      margin: 2px 0 14px;
+      color: #fffdf6;
+      font-size: 13px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .footer-links {
+      display: grid;
+      gap: 10px;
+    }
+
+    .footer-links a {
+      width: fit-content;
+      color: var(--cream);
+      font-size: 14px;
+    }
+
+    .footer-links a:hover,
+    .footer-links a:focus-visible {
+      color: var(--blush);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .footer-contact a {
+      display: inline-block;
+      margin-top: 0;
+      color: #fffdf6;
+      font-weight: 700;
+      overflow-wrap: anywhere;
+    }
+
+    .footer-contact .footer-links {
+      gap: 8px;
+    }
+
+    .footer-location {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin: 10px 0 0;
+      color: var(--cream);
+      font-size: 14px;
+    }
+
+    .footer-location svg {
+      width: 17px;
+      height: 17px;
+      flex-shrink: 0;
+      fill: currentColor;
+    }
+
+    .footer-bottom {
+      max-width: 1168px;
+      margin: 28px auto 0;
+      border-top: 1px solid rgba(248, 245, 232, 0.35);
+      padding-top: 16px;
+      color: var(--cream);
+      font-size: 12px;
+    }
+
+    .contact-dialog {
+      width: min(720px, calc(100vw - 32px));
+      max-height: min(90vh, 850px);
+      overflow-y: auto;
+      border: 1px solid #e5dfc9;
+      border-radius: 20px;
+      padding: clamp(22px, 4vw, 38px);
+      background: #fbf8ed;
+      color: var(--text);
+      box-shadow: 0 20px 60px rgba(53, 43, 30, 0.24);
+      font-family: inherit;
+    }
+
+    .contact-dialog::backdrop {
+      background: rgba(38, 34, 25, 0.52);
+    }
+
+    .contact-dialog-close {
+      position: absolute;
+      top: 14px;
+      right: 18px;
+      border: 0;
+      padding: 4px;
+      background: transparent;
+      color: var(--olive);
+      font-size: 30px;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .contact-dialog h2 {
+      margin: 0 34px 8px;
+      color: var(--olive-dark);
+      font-size: clamp(28px, 5vw, 42px);
+      text-align: center;
+    }
+
+    .contact-dialog-address {
+      margin: 0 0 26px;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.5;
+      text-align: center;
+    }
+
+    .newsletter-dialog {
+      position: fixed;
+      width: min(768px, calc(100vw - 32px));
+      max-height: min(92vh, 720px);
+      overflow-y: auto;
+      border: 1px solid #e8d8d5;
+      border-radius: 8px;
+      padding: clamp(28px, 6vw, 72px) clamp(20px, 10vw, 96px) 40px;
+      background: #fff0f1;
+      color: #354665;
+      box-shadow: 0 22px 70px rgba(31, 35, 48, 0.28);
+      font-family: inherit;
+      text-align: center;
+    }
+
+    .newsletter-dialog::backdrop {
+      background: rgba(33, 37, 48, 0.52);
+    }
+
+    .newsletter-close {
+      position: absolute;
+      top: 14px;
+      right: 18px;
+      border: 0;
+      padding: 2px 5px;
+      background: transparent;
+      color: #748091;
+      font: inherit;
+      font-size: 28px;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .newsletter-dialog h2 {
+      margin: 0 auto 18px;
+      max-width: 590px;
+      color: #354665;
+      font-size: clamp(26px, 5vw, 38px);
+      font-weight: 500;
+      line-height: 1.25;
+      text-transform: uppercase;
+    }
+
+    .newsletter-intro {
+      margin: 0 auto 20px;
+      max-width: 590px;
+      color: #465672;
+      font-size: clamp(16px, 2.5vw, 21px);
+      line-height: 1.55;
+    }
+
+    .newsletter-code {
+      display: inline-block;
+      margin-bottom: 18px;
+      border: 1px dashed #d67f72;
+      border-radius: 6px;
+      padding: 8px 14px;
+      background: rgba(255, 255, 255, 0.65);
+      color: #a85e50;
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+    }
+
+    .newsletter-form {
+      display: grid;
+      gap: 14px;
+    }
+
+    .newsletter-methods {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 8px 18px;
+      margin: 0;
+      border: 0;
+      padding: 0;
+      color: #465672;
+      font-size: 14px;
+    }
+
+    .newsletter-methods legend {
+      width: 100%;
+      margin-bottom: 7px;
+      font-weight: 700;
+    }
+
+    .newsletter-methods label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+    }
+
+    .newsletter-methods input {
+      accent-color: #ed9385;
+    }
+
+    .newsletter-fields {
+      display: grid;
+      gap: 10px;
+    }
+
+    .newsletter-fields[hidden] {
+      display: none;
+    }
+
+    .newsletter-fields input {
+      width: 100%;
+      min-height: 56px;
+      border: 1px solid #ed9385;
+      border-radius: 2px;
+      padding: 12px 18px;
+      background: #fff;
+      color: var(--text);
+      font: inherit;
+      font-size: 17px;
+    }
+
+    .newsletter-fields input:focus-visible {
+      outline: 3px solid rgba(237, 147, 133, 0.3);
+      outline-offset: 2px;
+    }
+
+    .newsletter-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .newsletter-actions button {
+      min-height: 66px;
+      border: 0;
+      border-radius: 3px;
+      padding: 12px 16px;
+      color: #fff;
+      font: inherit;
+      font-size: clamp(14px, 2.4vw, 20px);
+      font-weight: 800;
+      line-height: 1.3;
+      cursor: pointer;
+      text-transform: uppercase;
+    }
+
+    .newsletter-submit {
+      background: #f39b8c;
+    }
+
+    .newsletter-decline {
+      background: #747c8a;
+    }
+
+    .newsletter-submit:hover,
+    .newsletter-submit:focus-visible {
+      background: #dd8274;
+    }
+
+    .newsletter-decline:hover,
+    .newsletter-decline:focus-visible {
+      background: #626a78;
+    }
+
+    .newsletter-note {
+      margin: 0;
+      color: #5e6879;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .contact-form {
+      display: grid;
+      gap: 18px;
+      border: 1px solid #ded6b9;
+      border-radius: 20px;
+      padding: clamp(18px, 4vw, 34px);
+      background: #f4efde;
+      box-shadow: 0 2px 5px rgba(86, 69, 32, 0.08);
+    }
+
+    .contact-form label {
+      display: grid;
+      gap: 8px;
+      color: var(--olive-dark);
+      font-size: 14px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .contact-form input,
+    .contact-form textarea {
+      width: 100%;
+      border: 1px solid #e5dfc9;
+      border-radius: 14px;
+      padding: 14px 16px;
+      background: #fffdf6;
+      color: var(--text);
+      font: inherit;
+      font-size: 16px;
+      font-weight: 400;
+      text-transform: none;
+    }
+
+    .contact-form input {
+      min-height: 54px;
+    }
+
+    .contact-form textarea {
+      min-height: 140px;
+      resize: vertical;
+    }
+
+    .contact-form input:focus,
+    .contact-form textarea:focus {
+      border-color: var(--olive);
+      outline: 3px solid rgba(111, 115, 81, 0.25);
+    }
+
+    .contact-form input::placeholder,
+    .contact-form textarea::placeholder {
+      color: #9297a0;
+    }
+
+    .contact-form-note {
+      margin: -6px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .contact-submit {
+      min-height: 54px;
+      border: 0;
+      border-radius: 14px;
+      padding: 12px 18px;
+      background: var(--terracotta);
+      color: #fff;
+      font: inherit;
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: background-color 0.18s ease, transform 0.18s ease;
+    }
+
+    .contact-submit:hover,
+    .contact-submit:focus-visible {
+      background: var(--olive);
+      transform: translateY(-1px);
+    }
+
+    .gourmet-coming-soon {
+      width: min(100%, 220px);
+      margin: 0 auto 28px;
+      overflow: hidden;
+      border: 1px solid #f0e4df;
+      border-radius: 8px;
+      padding: 10px;
+      background: rgba(255,255,255,0.28);
+      text-align: center;
+    }
+
+    .gourmet-coming-soon img {
+      display: block;
+      width: 100%;
+      height: 180px;
+      border-radius: 7px;
+      background: #f7f0ee;
+      object-fit: cover;
+      object-position: center;
+      margin: 0 auto;
+    }
+
+    .product-card {
+      background: rgba(255,255,255,0.28);
+      border: 1px solid #f0e4df;
+      border-radius: 8px;
+      padding: 10px;
+      text-align: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+      cursor: pointer;
+      position: relative;
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .product-card:hover,
+    .product-card:focus-visible {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 16px rgba(0,0,0,0.07);
+      outline: none;
+    }
+
+    .product-card .image-wrap {
+      width: 100%;
+      height: 180px;
+      background: #f7f0ee;
+      border-radius: 7px;
+      overflow: hidden;
+      margin-bottom: 10px;
+      position: relative;
+    }
+
+    .product-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 48%;
+    }
+
+    .sold-out-product-card img {
+      filter: blur(2px) brightness(0.82);
+      transform: scale(1.03);
+    }
+
+    .product-card .sold-out-badge {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(81, 57, 47, 0.88);
+      color: #fff;
+      padding: 7px 18px;
+      border-radius: 7px;
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+
+    .product-card .add-cart-badge {
+      position: absolute;
+      left: 50%;
+      bottom: 12px;
+      transform: translateX(-50%);
+      background: rgba(30, 69, 118, 0.9);
+      color: #fff;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      opacity: 0;
+      transition: opacity 0.15s ease;
+      pointer-events: none;
+    }
+
+    .product-card:hover .add-cart-badge,
+    .product-card:focus-visible .add-cart-badge {
+      opacity: 1;
+    }
+
+    .sold-out-section {
+      margin-top: 36px;
+      scroll-margin-top: 24px;
+    }
+
+    .sold-out-section .products-header {
+      margin-bottom: 18px;
+    }
+
+    .sold-out-grid {
+      grid-template-columns: repeat(4, minmax(170px, 1fr));
+      gap: 12px 16px;
+    }
+
+    .sold-out-grid .product-card {
+      cursor: default;
+    }
+
+    .sold-out-grid .product-card .image-wrap {
+      height: 142px;
+      margin-bottom: 8px;
+    }
+
+    .sold-out-grid .product-name {
+      min-height: 20px;
+      margin-bottom: 2px;
+      font-size: 13px;
+    }
+
+    .sold-out-grid .product-card .sold-out-badge {
+      background: rgba(81, 57, 47, 0.88);
+    }
+
+    .sold-out-section[hidden] {
+      display: none;
+    }
+
+    .promotions-section {
+      margin-top: 36px;
+      scroll-margin-top: 24px;
+    }
+
+    .promotion-urgency {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin: 0 0 18px;
+    }
+
+    .promotion-urgency-item {
+      display: grid;
+      align-content: center;
+      gap: 5px;
+      min-height: 86px;
+      border: 1px solid #f0b5aa;
+      border-left: 5px solid #c83f36;
+      border-radius: 12px;
+      padding: 12px 14px;
+      background: #fff0ed;
+    }
+
+    .promotion-urgency-item strong {
+      color: #b32f28;
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .promotion-urgency-item span {
+      color: #653d37;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .promotion-grid {
+      grid-template-columns: repeat(4, minmax(170px, 1fr));
+      gap: 16px;
+    }
+
+    .promotion-card {
+      cursor: pointer;
+    }
+
+    .promotion-card .add-cart-badge {
+      opacity: 1;
+      background: rgba(179, 47, 40, 0.94);
+    }
+
+    .promotion-card .image-wrap {
+      height: 170px;
+    }
+
+    .promotion-card .product-name {
+      min-height: 38px;
+    }
+
+    .promotion-art {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      padding: 18px;
+      background: rgba(48, 36, 29, 0.14);
+    }
+
+    .promotion-art-label {
+      max-width: 100%;
+      border-radius: 48% 52% 46% 54% / 52% 45% 55% 48%;
+      padding: 12px 18px;
+      background: rgba(255, 246, 229, 0.95);
+      color: #a96650;
+      font-size: clamp(13px, 1.5vw, 18px);
+      font-weight: 900;
+      line-height: 1.15;
+      text-align: center;
+      text-transform: uppercase;
+      transform: rotate(-5deg);
+    }
+
+    .promotion-card[data-promotion-type="gift"] .promotion-art-label {
+      position: absolute;
+      top: 10px;
+      right: 8px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      border-radius: 999px;
+      padding: 6px 9px;
+      background: rgba(255, 250, 240, 0.94);
+      font-size: 10px;
+      letter-spacing: 0.04em;
+      transform: none;
+    }
+
+    .promotion-card[data-promotion-type="deal"] .promotion-art-label {
+      padding: 14px 20px;
+      background: rgba(247, 221, 204, 0.96);
+      color: #a96650;
+    }
+
+    .promotion-card[data-promotion-type="deal"]:nth-child(even) .promotion-art-label {
+      background: rgba(255, 246, 229, 0.96);
+    }
+
+    .promotion-card .product-description {
+      cursor: pointer;
+    }
+
+    .promotions-section[hidden] {
+      display: none;
+    }
+
+    .add-to-cart-pop {
+      position: fixed;
+      z-index: 2400;
+      display: grid;
+      justify-items: center;
+      gap: 4px;
+      width: 150px;
+      border: 2px solid #ffd1dc;
+      border-radius: 20px;
+      padding: 12px 14px;
+      background: linear-gradient(145deg, #fffdf9, #fff0f3);
+      color: #684778;
+      box-shadow: 0 14px 36px rgba(83, 49, 87, 0.24);
+      font-size: 13px;
+      font-weight: 900;
+      text-align: center;
+      pointer-events: none;
+      animation: add-to-cart-pop 1.45s ease-out forwards;
+    }
+
+    .add-to-cart-pop-icons {
+      color: #e54e78;
+      font-size: 24px;
+      letter-spacing: 4px;
+      line-height: 1;
+    }
+
+    @keyframes add-to-cart-pop {
+      0% { opacity: 0; transform: translate(-50%, -40%) scale(0.55); }
+      18% { opacity: 1; transform: translate(-50%, -58%) scale(1.08); }
+      72% { opacity: 1; transform: translate(-50%, -72%) scale(1); }
+      100% { opacity: 0; transform: translate(-50%, -100%) scale(0.94); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .add-to-cart-pop {
+        animation-duration: 1ms;
+      }
+    }
+
+    .cart-drawer {
+      position: fixed;
+      right: 20px;
+      top: 24px;
+      width: min(440px, calc(100vw - 28px));
+      max-height: calc(100vh - 40px);
+      background: rgba(255,255,255,0.96);
+      border: 1px solid #ebddda;
+      border-radius: 18px;
+      box-shadow: 0 20px 45px rgba(49, 31, 27, 0.16);
+      z-index: 1400;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateX(18px);
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      overflow: hidden;
+    }
+
+    .cart-drawer.open {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateX(0);
+    }
+
+    .cart-panel {
+      display: flex;
+      flex-direction: column;
+      max-height: calc(100vh - 40px);
+    }
+
+    .cart-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 18px 12px;
+      border-bottom: 1px solid #f0e7e4;
+      background: #fff9f7;
+    }
+
+    .cart-header h3 {
+      margin: 0;
+      font-size: 22px;
+      color: #2d2d2d;
+    }
+
+    .cart-close {
+      border: 0;
+      background: transparent;
+      font-size: 28px;
+      line-height: 1;
+      color: #a16b62;
+      cursor: pointer;
+    }
+
+    .cart-items {
+      padding: 16px 18px 8px;
+      overflow-y: auto;
+      min-height: 120px;
+      max-height: 260px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .cart-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 12px;
+      border: 1px solid #f3e5e2;
+      border-radius: 12px;
+      background: #fff;
+    }
+
+    .cart-item-left,
+    .cart-item-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .cart-item-left {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .cart-item-image {
+      width: 56px;
+      height: 56px;
+      flex-shrink: 0;
+      border-radius: 8px;
+      object-fit: cover;
+    }
+
+    .cart-item-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: #2e2e2e;
+      overflow-wrap: anywhere;
+    }
+
+    .cart-item-note {
+      margin-top: 4px;
+      color: #6d665d;
+      font-size: 11px;
+      line-height: 1.4;
+    }
+
+    .cart-item-price {
+      font-size: 13px;
+      color: #d56d64;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .remove-item {
+      border: 1px solid #efd4d0;
+      border-radius: 999px;
+      background: #fff6f4;
+      color: #b6625d;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 6px 10px;
+      cursor: pointer;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    .remove-item:hover,
+    .remove-item:focus-visible {
+      background: #fce9e5;
+      transform: translateY(-1px);
+    }
+
+    .cart-summary {
+      padding: 14px 18px 18px;
+      border-top: 1px solid #f0e7e4;
+      background: #fff;
+    }
+
+    .summary-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      font-size: 15px;
+      color: #2d2d2d;
+      font-weight: 700;
+    }
+
+    .summary-row strong {
+      color: #2d2d2d;
+    }
+
+    .action-btn {
+      width: 100%;
+      border: 0;
+      border-radius: 999px;
+      padding: 12px 14px;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .checkout-btn {
+      background: linear-gradient(135deg, #f3b6b2, #ed8784);
+      color: #fff;
+      margin-bottom: 14px;
+    }
+
+    .qr-panel {
+      border-top: 1px solid #f0e7e4;
+      padding-top: 14px;
+      display: none;
+    }
+
+    .qr-panel.visible {
+      display: block;
+    }
+
+    .fulfillment-dialog {
+      width: min(460px, calc(100vw - 32px));
+      border: 1px solid #f0cbd6;
+      border-radius: 20px;
+      padding: 26px;
+      background: #fffaf2;
+      color: var(--text);
+      box-shadow: 0 22px 60px rgba(83, 49, 87, 0.28);
+      font-family: inherit;
+    }
+
+    .fulfillment-dialog::backdrop {
+      background: rgba(48, 38, 54, 0.48);
+    }
+
+    .fulfillment-dialog h2 {
+      margin: 0 0 8px;
+      color: var(--olive-dark);
+      font-size: 24px;
+      text-align: center;
+    }
+
+    .fulfillment-dialog-intro {
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.5;
+      text-align: center;
+    }
+
+    .fulfillment-options {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin: 0 0 18px;
+      padding: 0;
+      border: 0;
+    }
+
+    .fulfillment-option {
+      display: grid;
+      justify-items: center;
+      gap: 8px;
+      border: 1px solid #e8d8cd;
+      border-radius: 14px;
+      padding: 16px 10px;
+      background: #fff;
+      color: var(--text);
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 800;
+      text-align: center;
+    }
+
+    .fulfillment-option:has(input:checked) {
+      border-color: var(--terracotta);
+      background: #fff0f2;
+      box-shadow: 0 0 0 2px rgba(214, 83, 112, 0.18);
+    }
+
+    .fulfillment-option input {
+      accent-color: var(--terracotta);
+    }
+
+    .fulfillment-option-icon {
+      font-size: 28px;
+      line-height: 1;
+    }
+
+    .fulfillment-dialog-note {
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+      text-align: center;
+    }
+
+    .fulfillment-dialog-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .fulfillment-dialog-actions button {
+      min-height: 44px;
+      border: 0;
+      border-radius: 999px;
+      padding: 10px 14px;
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .fulfillment-cancel {
+      background: #f0eaf0;
+      color: #574d5e;
+    }
+
+    .fulfillment-continue {
+      background: linear-gradient(105deg, #dc4d70, #ee7c65);
+      color: #fff;
+    }
+
+    .fulfillment-dialog-actions button:focus-visible {
+      outline: 3px solid rgba(111, 73, 136, 0.3);
+      outline-offset: 2px;
+    }
+
+    .fulfillment-summary {
+      margin: 0 0 12px !important;
+      border-radius: 10px;
+      padding: 10px 12px;
+      background: #f0fbf0;
+      color: #35684c !important;
+      font-size: 12px !important;
+      line-height: 1.45;
+      text-align: left !important;
+    }
+
+    .gcash-qr-image {
+      display: block;
+      width: min(220px, 100%);
+      height: auto;
+      max-height: min(360px, 40vh);
+      object-fit: contain;
+      margin: 0 auto 10px;
+      border-radius: 10px;
+    }
+
+    .qr-panel p {
+      margin: 0;
+      text-align: center;
+      color: #4a4a4a;
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .qr-panel .payment-qr-missing {
+      color: #9b3d3d;
+      font-weight: 600;
+      line-height: 1.5;
+    }
+
+    .payment-method-title {
+      margin: 0 0 10px;
+      color: #4a4a4a;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .payment-method-options {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .payment-method-option {
+      display: flex;
+      min-width: 0;
+      min-height: 42px;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      border: 1px solid #ded6b9;
+      border-radius: 8px;
+      padding: 7px 5px;
+      background: #fffdf6;
+      color: var(--olive-dark);
+      font: inherit;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .payment-method-option[aria-pressed="true"] {
+      border-color: var(--olive);
+      background: #f1ecdc;
+      box-shadow: 0 0 0 1px var(--olive);
+    }
+
+    .payment-method-option:focus-visible,
+    .payment-contact-button:focus-visible {
+      outline: 2px solid var(--olive);
+      outline-offset: 2px;
+    }
+
+    .payment-method-option svg {
+      width: 19px;
+      height: 19px;
+      flex: 0 0 auto;
+      fill: currentColor;
+    }
+
+    .payment-method-details[hidden] {
+      display: none;
+    }
+
+    .payment-qr-placeholder {
+      display: grid;
+      width: 96px;
+      height: 96px;
+      place-items: center;
+      margin: 0 auto 10px;
+      border: 1px solid #ded6b9;
+      border-radius: 10px;
+      background: #fffdf6;
+      color: var(--olive-dark);
+    }
+
+    .payment-qr-placeholder svg {
+      width: 62px;
+      height: 62px;
+      fill: currentColor;
+    }
+
+    .payment-method-details p {
+      margin: 0 0 10px;
+      text-align: center;
+      color: #4a4a4a;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .payment-method-details .payment-contact-button {
+      display: block;
+      width: fit-content;
+      margin: 0 auto;
+      border: 0;
+      border-radius: 999px;
+      padding: 8px 14px;
+      background: var(--olive);
+      color: #fffdf6;
+      font: inherit;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .product-name {
+      margin: 2px 0 6px;
+      font-size: 14px;
+      line-height: 1.4;
+      color: #1f1f1f;
+      min-height: 38px;
+      font-weight: 600;
+    }
+
+    .price-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 6px;
+    }
+
+    .price-row .current {
+      color: #2a2a2a;
+      font-weight: 800;
+      font-size: 15px;
+    }
+
+    .price-row .old {
+      color: #aeaeae;
+      text-decoration: line-through;
+      font-size: 12px;
+    }
+
+    .stars {
+      color: #f2b84b;
+      font-size: 12px;
+      letter-spacing: 1px;
+    }
+
+    @media (max-width: 1100px) {
+      .promo-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .site-header {
+        padding: 10px 12px;
+      }
+
+      .header-inner {
+        flex-wrap: wrap;
+        height: auto;
+        padding: 12px 0;
+      }
+
+      .site-nav {
+        order: 3;
+        flex: 0 0 100%;
+        width: 100%;
+        justify-content: space-between;
+        flex-wrap: nowrap;
+        gap: clamp(4px, 1.2vw, 14px);
+        overflow-x: auto;
+        scrollbar-width: none;
+      }
+
+      .site-nav::-webkit-scrollbar {
+        display: none;
+      }
+
+      .site-nav button,
+      .site-nav a {
+        flex: 0 0 auto;
+        font-size: clamp(11px, 1.5vw, 13px);
+        padding: 9px clamp(8px, 1.2vw, 12px);
+      }
+
+      .products-menu {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .help-topic-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .product-grid {
+        grid-template-columns: repeat(2, minmax(170px, 1fr));
+      }
+
+      .review-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .review-photo-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .footer-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 28px;
+      }
+
+      .footer-brand {
+        grid-column: 1 / -1;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .top-strip {
+        justify-content: flex-start;
+        padding: 0 14px;
+      }
+
+      .top-strip .center-text {
+        text-align: left;
+        padding-right: 110px;
+      }
+
+      .top-strip .account-links {
+        right: 12px;
+        gap: 8px;
+        font-size: 10px;
+      }
+
+      .site-nav {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        justify-content: flex-start;
+        gap: 6px;
+        overflow: visible;
+      }
+
+      .site-nav button:last-child,
+      .site-nav a:last-child {
+        grid-column: 1 / -1;
+        justify-self: center;
+        min-width: 50%;
+      }
+
+      .products-menu {
+        grid-template-columns: 1fr;
+        gap: 18px;
+        max-height: min(70vh, 560px);
+        overflow-y: auto;
+      }
+
+      .help-center-menu {
+        right: 0;
+        left: auto;
+        width: min(520px, calc(100vw - 24px));
+        transform: none;
+      }
+
+      .help-center-hero {
+        padding: 24px 16px 34px;
+      }
+
+      .help-search-form {
+        gap: 7px;
+      }
+
+      .help-search-form button {
+        min-width: 78px;
+        padding: 0 14px;
+      }
+
+      .help-topic-grid {
+        gap: 10px;
+        padding-right: 12px;
+        padding-left: 12px;
+      }
+
+      .help-topic {
+        min-height: 176px;
+        padding: 16px 10px;
+      }
+
+      .site-footer {
+        padding-top: 32px;
+      }
+
+      .footer-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+
+      .footer-brand {
+        grid-column: auto;
+      }
+
+      .hero-content {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .hero-visual {
+        width: 100%;
+        min-width: auto;
+        height: 160px;
+        margin-right: 0;
+      }
+
+      .product-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .review-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .review-photo-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    body,
+    .page-shell {
+      background: var(--cream);
+      color: var(--text);
+    }
+
+    .top-strip {
+      height: 26px;
+      background: var(--olive);
+      color: var(--cream);
+    }
+
+    .header-inner {
+      max-width: 1440px;
+      height: 130px;
+      gap: 22px;
+    }
+
+    .site-header {
+      background: #fbf8ed;
+      border-bottom-color: #e5dfc9;
+    }
+
+    .brand {
+      min-width: 235px;
+    }
+
+    .brand-mark {
+      width: 80px;
+      height: 80px;
+      padding: 4px;
+      border: 1px solid #ded6b9;
+      border-radius: 50%;
+      background: var(--cream);
+    }
+
+    .deliver-box {
+      min-width: 204px;
+      padding: 10px 16px;
+    }
+
+    .brand-text strong {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--olive-dark);
+      font-size: 17px;
+      font-weight: 800;
+      letter-spacing: 0.03em;
+      line-height: 1.2;
+      white-space: nowrap;
+    }
+
+    .brand-text small {
+      color: var(--terracotta);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .deliver-box {
+      min-width: 170px;
+      border-color: #ded6b9;
+      background: #f4efde;
+      color: var(--olive-dark);
+    }
+
+    .deliver-box .label,
+    .deliver-box .icon {
+      color: var(--olive);
+    }
+
+    .deliver-box:focus-visible {
+      outline-color: var(--olive);
+    }
+
+    .site-nav {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      gap: 4px;
+      flex-wrap: nowrap;
+      overflow: visible;
+      border: 1px solid #ded6b9;
+      border-radius: 999px;
+      padding: 5px;
+      background: #f4efde;
+    }
+
+    .site-nav button,
+    .site-nav a {
+      border-radius: 999px;
+      padding: 10px 13px;
+      color: var(--olive-dark);
+      font-size: 12px;
+    }
+
+    .site-nav .about-us-link {
+      margin-right: 14px;
+    }
+
+    .site-nav .promotions-link {
+      color: #c83f36;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .site-nav .promotions-link:hover,
+    .site-nav .promotions-link:focus-visible {
+      background: rgba(200, 63, 54, 0.12);
+      color: #b32f28;
+    }
+
+    .site-nav button:hover,
+    .site-nav button:focus-visible,
+    .site-nav a:hover,
+    .site-nav a:focus-visible {
+      background: #e9e5d1;
+      color: var(--olive-dark);
+    }
+
+    .site-nav button.active,
+    .site-nav a.active {
+      background: #e9e5d1;
+      color: var(--olive-dark);
+    }
+
+    .site-nav .products-menu-toggle {
+      flex: 0 0 auto;
+      padding-inline: 18px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .products-menu {
+      top: calc(100% + 12px);
+      border-color: #e5dfc9;
+      background: #fffdf6;
+    }
+
+    .products-menu-group h2 {
+      color: var(--olive-dark);
+    }
+
+    .site-nav .products-menu-group .nav-link {
+      grid-column: auto;
+      justify-self: stretch;
+      border-radius: 6px;
+      min-width: 0;
+      width: 100%;
+      padding: 8px 10px;
+      background: transparent;
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 500;
+      text-align: left;
+      text-transform: none;
+    }
+
+    .products-menu-group .nav-link:hover,
+    .products-menu-group .nav-link:focus-visible,
+    .products-menu-group .nav-link.active {
+      background: #f1ecdc;
+      color: var(--olive-dark);
+    }
+
+    .site-nav .products-menu-toggle,
+    .site-nav .help-center-toggle {
+      flex: 0 0 auto;
+      padding-inline: 14px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .help-center-menu {
+      top: calc(100% + 12px);
+      border-color: #e5dfc9;
+      background: #fffdf6;
+    }
+
+    .help-center-hero {
+      background: #f0eadb;
+    }
+
+    .help-center-welcome {
+      color: var(--terracotta);
+    }
+
+    .help-center-hero h2,
+    .help-topic strong {
+      color: var(--olive-dark);
+    }
+
+    .help-search-form input {
+      border-color: var(--olive);
+    }
+
+    .help-search-form button {
+      background: var(--terracotta);
+    }
+
+    .help-search-form button:hover,
+    .help-search-form button:focus-visible {
+      background: var(--olive-dark);
+    }
+
+    .help-topic {
+      border-color: #ded6b9;
+      background: #fffdf6;
+    }
+
+    .help-topic:hover,
+    .help-topic:focus-visible {
+      border-color: var(--olive);
+    }
+
+    .help-topic-icon {
+      color: var(--olive);
+    }
+
+    .help-topic-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    @media (max-width: 1100px) {
+      .help-topic-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 560px) {
+      .help-center-menu {
+        grid-template-columns: 1fr;
+      }
+
+      .help-center-hero h2 {
+        font-size: 26px;
+      }
+
+      .help-topic-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    .header-tools {
+      min-width: 78px;
+      gap: 10px;
+    }
+
+    .mini-icon {
+      background: #f1ecdc;
+      color: var(--olive-dark);
+    }
+
+    .mini-icon:hover,
+    .mini-icon:focus-visible {
+      background: #e9e5d1;
+      box-shadow: 0 8px 18px rgba(67, 63, 43, 0.1);
+    }
+
+    .mini-icon .badge {
+      background: var(--terracotta);
+    }
+
+    .deliver-box:focus-visible,
+    .location-item:focus-visible,
+    .location-close:focus-visible,
+    .location-search:focus-visible {
+      outline-color: rgba(111, 115, 81, 0.55);
+    }
+
+    .location-panel {
+      background: var(--olive);
+      border-color: #d9d0ae;
+    }
+
+    .location-help,
+    .location-item {
+      color: #f8f5e8;
+    }
+
+    .location-item:hover {
+      background: rgba(248, 245, 232, 0.14);
+    }
+
+    .account-form button,
+    .account-dialog-done,
+    .checkout-btn,
+    .mini-card .cta {
+      background: var(--terracotta);
+    }
+
+    .account-form input:focus,
+    .search-input:focus {
+      outline-color: rgba(111, 115, 81, 0.35);
+    }
+
+    .account-secondary-action,
+    .order-status {
+      background: #eee8d8;
+      color: var(--olive-dark);
+    }
+
+    .promo-wrap {
+      background: #eee8d8;
+      border-bottom-color: #ddd4bc;
+    }
+
+    .hero-card {
+      background: linear-gradient(135deg, #f8f5e8, #eee5d1);
+      border-color: #e1d8bf;
+    }
+
+    .hero-copy .small-label {
+      background: #fdfbf3;
+      color: var(--terracotta);
+    }
+
+    .hero-copy h1 {
+      color: var(--olive-dark);
+    }
+
+    .balloon {
+      background: radial-gradient(circle at 30% 30%, #fffdf5, #ead8c7 65%, #d3a18d);
+      border-color: rgba(169, 102, 80, 0.55);
+      color: var(--terracotta);
+    }
+
+    .balloon::after {
+      background: linear-gradient(#d4a08c, #a96650);
+    }
+
+    .flower-bunch::before {
+      background: linear-gradient(135deg, #ead9c2, #d8b6a3 65%, #f0e3ce);
+    }
+
+    .flower-bunch::after {
+      background: linear-gradient(135deg, #e8e2c8, #aab08a 65%, #d4d2ad);
+    }
+
+    .mini-card,
+    .side-stack {
+      background: #f4ede0;
+      border-color: #e3d8c5;
+    }
+
+    .mini-card {
+      box-shadow: 0 8px 12px rgba(86, 77, 53, 0.08);
+    }
+
+    .site-nav button:hover,
+    .site-nav button:focus-visible,
+    .site-nav a:hover,
+    .site-nav a:focus-visible,
+    .site-nav button.active,
+    .site-nav a.active {
+      color: var(--olive-dark);
+    }
+
+    .products-header,
+    .customer-reviews {
+      border-color: #dfdac8;
+    }
+
+    .products-header h2,
+    .customer-reviews h2,
+    .review-gallery h3 {
+      color: var(--olive-dark);
+    }
+
+    .products-header .more-link,
+    .product-description summary,
+    .cart-item-price {
+      color: var(--terracotta);
+    }
+
+    .review-card,
+    .review-photo {
+      border-color: #e6ddcc;
+      background: rgba(255, 253, 245, 0.78);
+    }
+
+    .review-story-label {
+      background: #eee2d3;
+      color: var(--terracotta);
+    }
+
+    .review-author {
+      color: var(--olive);
+    }
+
+    .review-photo img {
+      background: #f3eee1;
+    }
+
+    .product-card {
+      border-color: #e4dccb;
+      background: rgba(255, 253, 245, 0.62);
+    }
+
+    .product-card .image-wrap {
+      background: #f0eadb;
+    }
+
+    .product-card .sold-out-badge {
+      background: rgba(85, 88, 62, 0.92);
+    }
+
+    @media (max-width: 1100px) {
+      .sold-out-grid {
+        grid-template-columns: repeat(2, minmax(170px, 1fr));
+      }
+    }
+
+    @media (max-width: 560px) {
+      .promotion-urgency {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+
+      .promotion-urgency-item {
+        min-height: 0;
+      }
+
+      .sold-out-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .sold-out-grid .product-card {
+        padding: 8px;
+      }
+
+      .sold-out-grid .product-card .image-wrap {
+        height: 120px;
+      }
+
+      .sold-out-grid .product-card .sold-out-badge {
+        padding: 6px 10px;
+        font-size: 12px;
+      }
+
+      .promotion-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .promotion-card .image-wrap {
+        height: 120px;
+      }
+
+      .promotion-card .product-name {
+        font-size: 12px;
+      }
+
+      .promotion-art-label {
+        padding: 9px 12px;
+        font-size: 12px;
+      }
+    }
+
+    .search-panel,
+    .cart-drawer,
+    .account-dialog {
+      border-color: #e4dccb;
+      background-color: #fbf8ed;
+    }
+
+    .search-label,
+    .search-close,
+    .cart-close,
+    .account-dialog-close {
+      color: var(--olive);
+    }
+
+    .search-input,
+    .search-result,
+    .cart-item,
+    .cart-summary,
+    .cart-header {
+      background: #fffdf6;
+    }
+
+    .search-input,
+    .search-result,
+    .cart-item {
+      border-color: #e6ddcc;
+    }
+
+    .search-input:focus {
+      border-color: var(--olive);
+    }
+
+    .search-result:hover,
+    .search-result:focus-visible,
+    .remove-item:hover,
+    .remove-item:focus-visible {
+      background: #f1ecdc;
+    }
+
+    .remove-item {
+      border-color: #dfcbb9;
+      background: #f5ece1;
+      color: var(--terracotta);
+    }
+
+    body {
+      background: #fff8ee;
+      color: var(--text);
+    }
+
+    .page-shell {
+      background: linear-gradient(180deg, #fff9ef 0%, #fff4f0 48%, #f7fbef 100%);
+    }
+
+    .top-strip {
+      background: linear-gradient(100deg, #e84e73, #ef7592 52%, #f39a6b);
+    }
+
+    .site-header {
+      background: rgba(255, 253, 249, 0.97);
+      border-bottom-color: #f3cfda;
+    }
+
+    .brand-text strong {
+      color: #4f3a61;
+    }
+
+    .brand-text small {
+      color: #d65370;
+    }
+
+    .deliver-box {
+      border-color: #cfe8d3;
+      background: #f0fbf0;
+      color: #35684c;
+    }
+
+    .promo-wrap {
+      background: linear-gradient(125deg, #fff0d8, #ffe4ec 55%, #e7f5e8);
+      border-bottom-color: #f3cbd4;
+    }
+
+    .hero-card {
+      background: linear-gradient(135deg, #fff8e5, #ffe4ea 55%, #e5f4e8);
+      border-color: #f2c8d4;
+    }
+
+    .products-header,
+    .customer-reviews {
+      border-color: #f0cbd6;
+    }
+
+    .products-header h2,
+    .customer-reviews h2,
+    .review-gallery h3 {
+      color: #4d3b60;
+    }
+
+    .product-card {
+      border-color: #f1d5d4;
+      background: rgba(255, 253, 248, 0.9);
+      box-shadow: 0 5px 14px rgba(114, 73, 93, 0.07);
+    }
+
+    .product-card:hover,
+    .product-card:focus-visible {
+      box-shadow: 0 11px 24px rgba(163, 74, 111, 0.16);
+    }
+
+    .promotion-card {
+      background: linear-gradient(155deg, #fffdf8, #fff3f2 60%, #f1faed);
+    }
+
+    .promotion-card .image-wrap {
+      background: #ffe7ec;
+    }
+
+    .promotion-card .add-cart-badge {
+      background: linear-gradient(100deg, #d94167, #f07867);
+      box-shadow: 0 5px 15px rgba(192, 51, 89, 0.28);
+    }
+
+    .promotion-art-label {
+      color: #c34e62;
+      box-shadow: 0 5px 14px rgba(93, 56, 78, 0.16);
+    }
+
+    .promotion-urgency-item:nth-child(2) {
+      border-color: #f3d28c;
+      border-left-color: #ed9e24;
+      background: #fff8dd;
+    }
+
+    .promotion-urgency-item:nth-child(2) strong {
+      color: #a76511;
+    }
+
+    .promotion-urgency-item:nth-child(3) {
+      border-color: #bfe3c7;
+      border-left-color: #4d9a62;
+      background: #effaf0;
+    }
+
+    .promotion-urgency-item:nth-child(3) strong {
+      color: #35684c;
+    }
+
+    .site-footer {
+      background: linear-gradient(125deg, #4d8b65, #477a75 58%, #65527f);
+    }
+
+    .contact-us-btn {
+      background: linear-gradient(105deg, #dc4d70, #ee7c65);
+    }
+
+    .review-gallery-controls {
+      display: flex;
+      justify-content: flex-end;
+      margin: 0 0 10px;
+    }
+
+    .review-carousel-toggle {
+      min-width: 96px;
+      border: 1px solid #d8b7df;
+      border-radius: 999px;
+      padding: 8px 14px;
+      background: #f7edff;
+      color: #614278;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .review-carousel-toggle:hover,
+    .review-carousel-toggle:focus-visible {
+      background: #eee0ff;
+      outline: 3px solid rgba(111, 73, 136, 0.2);
+      outline-offset: 2px;
+    }
+
+    .review-carousel-toggle:disabled {
+      cursor: default;
+      opacity: 0.75;
+    }
+
+    .review-photo-viewport {
+      overflow: hidden;
+      border-radius: 12px;
+    }
+
+    .review-photo-track {
+      display: flex;
+      width: max-content;
+      animation: customer-photos-scroll 42s linear infinite;
+      will-change: transform;
+    }
+
+    .review-photo-group {
+      display: flex;
+      flex: 0 0 auto;
+      gap: 16px;
+      padding-right: 16px;
+    }
+
+    .review-photo-track.is-paused,
+    .review-photo-viewport:hover .review-photo-track,
+    .review-photo-viewport:focus-within .review-photo-track {
+      animation-play-state: paused;
+    }
+
+    .review-photo-group .review-photo {
+      flex: 0 0 min(360px, calc((100vw - 80px) / 3));
+      min-width: 0;
+    }
+
+    @keyframes customer-photos-scroll {
+      to { transform: translateX(-50%); }
+    }
+
+    @media (max-width: 800px) {
+      .review-photo-group .review-photo {
+        flex-basis: min(360px, calc((100vw - 48px) / 2));
+      }
+    }
+
+    @media (max-width: 560px) {
+      .review-photo-group .review-photo {
+        flex-basis: calc(100vw - 48px);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .review-photo-viewport {
+        overflow-x: auto;
+        scrollbar-color: #d65370 #ffe8ee;
+      }
+
+      .review-photo-track {
+        animation: none;
+        will-change: auto;
+      }
+    }
+
+    .promo-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+      padding: 28px 16px 24px;
+    }
+
+    .hero-card {
+      grid-column: 1 / -1;
+      min-height: 380px;
+      padding: 28px;
+    }
+
+    .hero-content {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+      gap: clamp(24px, 5vw, 64px);
+      align-items: center;
+    }
+
+    .hero-visual {
+      grid-column: 1;
+      grid-row: 1;
+      width: 100%;
+      min-width: 0;
+      height: 320px;
+      margin: 0;
+    }
+
+    .hero-product-image {
+      transform: none;
+    }
+
+    .hero-copy {
+      grid-column: 2;
+      grid-row: 1;
+      max-width: 520px;
+      text-align: center;
+    }
+
+    .hero-copy h1 {
+      font-size: clamp(2.25rem, 4.3vw, 3.8rem);
+      line-height: 1;
+      letter-spacing: -1.5px;
+    }
+
+    .promo-feature-row {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .promo-feature-row .mini-card,
+    .promo-feature-row .side-stack-link {
+      min-height: 158px;
+      height: 100%;
+    }
+
+    .promo-feature-row .mini-card img,
+    .promo-feature-row .side-stack-link img {
+      height: 112px;
+    }
+
+    @media (max-width: 700px) {
+      .promo-grid {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 14px;
+        padding: 18px 12px 20px;
+      }
+
+      .hero-card {
+        min-height: 0;
+        padding: 18px;
+      }
+
+      .hero-content {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 20px;
+      }
+
+      .hero-visual {
+        grid-column: 1;
+        grid-row: 1;
+        height: clamp(190px, 54vw, 280px);
+      }
+
+      .hero-copy {
+        grid-column: 1;
+        grid-row: 2;
+        max-width: none;
+      }
+
+      .hero-copy h1 {
+        font-size: clamp(2rem, 8vw, 3.2rem);
+      }
+
+      .promo-feature-row {
+        grid-column: 1;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 12px;
+      }
+    }
+  </style>
+  <script>
+    window.addEventListener('error', (event) => {
+      const image = event.target;
+      if (!(image instanceof HTMLImageElement) || image.dataset.fallbackApplied) return;
+      image.dataset.fallbackApplied = 'true';
+
+      if (image.classList.contains('gcash-qr-image')) {
+        const message = document.createElement('p');
+        message.className = 'payment-qr-missing';
+        message.setAttribute('role', 'status');
+        message.textContent = 'The shop payment QR is unavailable. Please contact the shop before sending payment.';
+        image.closest('[data-payment-details="gcash"]').replaceChildren(message);
+        return;
+      }
+
+      const placeholder = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 420"><rect width="640" height="420" fill="#f6e9e5"/><path d="M320 370c-5-115-9-160-5-216" fill="none" stroke="#71866c" stroke-width="10" stroke-linecap="round"/><path d="M316 292c-62-48-112-37-128-15 38 47 83 58 128 15Zm7-59c56-48 105-40 124-17-34 45-80 60-124 17Z" fill="#839978"/><g fill="#d9828b"><ellipse cx="267" cy="145" rx="27" ry="48"/><ellipse cx="321" cy="120" rx="27" ry="48"/><ellipse cx="375" cy="145" rx="27" ry="48"/><ellipse cx="283" cy="184" rx="27" ry="48"/><ellipse cx="359" cy="184" rx="27" ry="48"/></g><circle cx="321" cy="160" r="25" fill="#e7b95e"/><text x="320" y="390" text-anchor="middle" fill="#596553" font-family="Arial,sans-serif" font-size="18">Add the original photo to the assets folder</text></svg>';
+      image.alt = 'Decorative flower placeholder. Add the original photo to the assets folder.';
+      image.src = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(placeholder)}`;
+    }, true);
+  </script>
+</head>
+<body>
+  <div class="page-shell">
+    <div class="top-strip">
+      <div class="account-links">
+        <button class="account-action" type="button" data-account-mode="track">Track Order</button>
+        <button class="account-action" type="button" data-account-mode="login">Login</button>
+        <button class="account-action" type="button" data-account-mode="register">Registration</button>
+      </div>
+    </div>
+
+    <header class="site-header">
+      <div class="header-inner">
+        <div class="brand">
+          <img class="brand-mark" src="assets/fleuri-logo.png" alt="Fleuri Crochet Flowers" />
+          <div class="brand-text">
+            <strong>FLEURI CROCHET FLOWERS</strong>
+            <small>CDO • CROCHET FLOWERS</small>
+          </div>
+        </div>
+
+        <button class="deliver-box" type="button" aria-label="Select delivery barangay" aria-expanded="false" aria-controls="locationModal">
+          <div class="icon">📍</div>
+          <div>
+            <span class="label">Deliver to</span>
+            <div id="selected-location">Select barangay</div>
+          </div>
+        </button>
+
+        <nav class="site-nav" aria-label="Main navigation">
+          <a class="about-us-link" href="#aboutUs">ABOUT US</a>
+          <a class="promotions-link" href="#promotionsSection">PROMOTIONS</a>
+          <div class="product-menu-wrap" id="productMenuWrap">
+            <button
+              type="button"
+              class="products-menu-toggle"
+              id="productsMenuToggle"
+              aria-haspopup="true"
+              aria-expanded="false"
+              aria-controls="productsMenu"
+            >View Products</button>
+            <div class="products-menu" id="productsMenu" aria-label="Product categories">
+              <section class="products-menu-group">
+                <h2>Shop by occasion</h2>
+                <button type="button" class="nav-link active" data-category="birthdays">Birthdays</button>
+                <button type="button" class="nav-link" data-category="occasions">Occasions</button>
+              </section>
+              <section class="products-menu-group">
+                <h2>Flowers &amp; gifts</h2>
+                <button type="button" class="nav-link" data-category="flowers">Flower &amp; Plants</button>
+                <button type="button" class="nav-link" data-category="more">More Gifts</button>
+              </section>
+              <section class="products-menu-group">
+                <h2>Explore more</h2>
+                <button type="button" class="nav-link" data-category="gourmet">Gourmet Delights</button>
+              </section>
+            </div>
+          </div>
+          <div class="help-center-wrap" id="helpCenterWrap">
+            <button
+              type="button"
+              class="help-center-toggle"
+              id="helpCenterToggle"
+              aria-haspopup="true"
+              aria-expanded="false"
+              aria-controls="helpCenterMenu"
+            >Help Center</button>
+            <section class="help-center-menu" id="helpCenterMenu" aria-label="Fleuri Help Center">
+              <div class="help-center-hero">
+                <p class="help-center-welcome">Welcome to Fleuri Support</p>
+                <h2>How can we help?</h2>
+                <p class="help-center-subtitle">Search for answers or choose a help topic.</p>
+                <form class="help-search-form" id="helpSearchForm" role="search">
+                  <input id="helpSearchInput" type="search" placeholder="Search help topics" aria-label="Search help topics" />
+                  <button type="submit">Search</button>
+                </form>
+                <div class="help-popular-searches" aria-label="Popular help searches">
+                  <strong>Popular searches:</strong>
+                  <button type="button" data-help-query="order">orders</button>
+                  <button type="button" data-help-query="payment">payment</button>
+                  <button type="button" data-help-query="delivery">delivery</button>
+                </div>
+              </div>
+              <div class="help-topic-grid">
+                <button class="help-topic" type="button" data-help-action="track" data-help-keywords="order track status tracking">
+                  <span class="help-topic-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24"><path d="M3 5h11v12H3zM14 9h4l3 3v5h-7zM7 20a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM18 20a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" /></svg>
+                  </span>
+                  <strong>Questions about orders &amp; tracking</strong>
+                  <span>Check an order or get help with its status.</span>
+                </button>
+                <button class="help-topic" type="button" data-help-action="payment" data-help-keywords="payment checkout cart gcash">
+                  <span class="help-topic-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24"><path d="M3 6h18v12H3zM3 10h18M7 15h4" /></svg>
+                  </span>
+                  <strong>Questions about payment &amp; checkout</strong>
+                  <span>Review your cart and payment options.</span>
+                </button>
+                <button class="help-topic" type="button" data-help-action="delivery" data-help-keywords="delivery barangay cdo cagayan de oro">
+                  <span class="help-topic-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24"><path d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 1 1 14 0Z" /><circle cx="12" cy="10" r="2.5" /></svg>
+                  </span>
+                  <strong>Questions about delivery in CDO</strong>
+                  <span>Find delivery coverage and choose a barangay.</span>
+                </button>
+                <button class="help-topic" type="button" data-help-action="contact" data-help-keywords="contact support message email help">
+                  <span class="help-topic-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24"><path d="M4 5h16v12H9l-5 4zM8 9h8M8 13h5" /></svg>
+                  </span>
+                  <strong>Questions about contacting Fleuri</strong>
+                  <span>Send us a message and we’ll be glad to help.</span>
+                </button>
+              </div>
+              <p class="help-no-results" id="helpNoResults" role="status" hidden>No matching help topics. Try searching for orders, payment, delivery, or contact.</p>
+            </section>
+          </div>
+        </nav>
+
+        <div class="header-tools">
+          <button type="button" class="mini-icon" data-cart-toggle aria-label="Open cart">
+            <span aria-hidden="true">🛒</span>
+            <span class="badge">0</span>
+          </button>
+          <button type="button" class="mini-icon" data-search-toggle aria-label="Search products">
+            <span aria-hidden="true">🔍</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <section class="promo-wrap">
+      <div class="promo-grid">
+        <a class="hero-card hero-card-link" href="#promotionsSection" aria-label="Shop birthday gift savings in Promotions">
+          <div class="hero-content">
+            <div class="hero-copy">
+              <div class="small-label">PROMOTIONS</div>
+              <h1>Unwrap Special Savings on Birthday Gifts</h1>
+            </div>
+
+            <div class="hero-visual">
+              <img class="hero-product-image" src="assets/bouquet-tulip-pink.jpg" alt="Pink crochet flower bouquet featured in Fleuri promotions." />
+            </div>
+        </div>
+        </a>
+
+        <div class="promo-feature-row">
+          <div class="mini-card">
+            <img src="assets/feature-lavender.jpg" alt="Handmade purple crochet flower bouquet wrapped in white paper." />
+            <a class="cta" href="#productsTitle">Shop Now</a>
+          </div>
+          <a class="side-stack side-stack-link more-gifts-card" href="#productsTitle" aria-label="View More Gifts">
+            <img src="assets/feature-mixed.jpg" alt="Handmade crochet bouquet with pastel flowers and blue accents." />
+            <span class="side-stack-label">MORE GIFT</span>
+          </a>
+          <a class="side-stack side-stack-link" href="tel:09168501249" aria-label="Call Fleuri at 09168501249">
+            <img src="assets/feature-pastel.jpg" alt="Handmade pastel crochet flower bouquet with blue, white, and purple flowers." />
+            <span class="side-stack-label">CALL 09168501249</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <main class="products-panel">
+      <div class="products-header">
+        <h2 id="productsTitle">Best Sellers</h2>
+        <a href="#soldOutSection" class="more-link" id="shopMoreLink">SOLD OUT</a>
+      </div>
+
+      <div class="product-grid" id="productGrid">
+        <article class="product-card" tabindex="0" data-product="Classic Crochet Blooms" data-price="599" data-category="flowers">
+          <div class="image-wrap">
+            <img src="assets/bouquet-classic.png" alt="Red and pink handmade crochet flower bouquet wrapped for gifting." />
+            <span class="add-cart-badge">Add to cart</span>
+          </div>
+          <div class="product-name">Classic Crochet Blooms</div>
+          <div class="price-row"><span class="current">₱599</span><span class="old">₱999</span></div>
+          <div class="stars">★★★★★</div>
+          <details class="product-description">
+            <summary>Description</summary>
+            <p>A cheerful red crochet bouquet, carefully arranged in bright gift wrap for a keepsake that lasts.</p>
+            <p><strong>Perfect for:</strong> birthdays, thank-you gifts, and celebrations.</p>
+          </details>
+        </article>
+
+        <article class="product-card" tabindex="0" data-product="Lavender Dream" data-price="499" data-category="birthdays">
+          <div class="image-wrap">
+            <img src="assets/bouquet-lavender.jpg" alt="Purple crochet flowers with yellow centers in a white gift wrap." />
+            <span class="add-cart-badge">Add to cart</span>
+          </div>
+          <div class="product-name">Lavender Dream</div>
+          <div class="price-row"><span class="current">₱499</span><span class="old">₱799</span></div>
+          <div class="stars">★★★★★</div>
+          <details class="product-description">
+            <summary>Description</summary>
+            <p>A soft lavender arrangement with purple and sunny yellow crochet blooms, finished in elegant white wrapping.</p>
+            <p><strong>Perfect for:</strong> birthdays, thoughtful surprises, and flower lovers.</p>
+          </details>
+        </article>
+
+        <article class="product-card" tabindex="0" data-product="Sweet Tulip Set" data-price="599" data-category="occasions">
+          <div class="image-wrap">
+            <img src="assets/bouquet-tulip-pink.jpg" alt="Pink handmade crochet flower bouquet with a pink wrap." />
+            <span class="add-cart-badge">Add to cart</span>
+          </div>
+          <div class="product-name">Sweet Tulip Set</div>
+          <div class="price-row"><span class="current">₱599</span><span class="old">₱899</span></div>
+          <div class="stars">★★★★★</div>
+          <details class="product-description">
+            <summary>Description</summary>
+            <p>A playful pink crochet bouquet with delicate flower details and a sweet, romantic color palette.</p>
+            <p><strong>Perfect for:</strong> anniversaries, birthdays, and just-because gifting.</p>
+          </details>
+        </article>
+
+        <article class="product-card" tabindex="0" data-product="Pastel Bloom" data-price="449" data-category="flowers">
+          <div class="image-wrap">
+            <img src="assets/bouquet-pastel.jpg" alt="Pastel crochet bouquet with pale blue, white, and purple flowers." />
+            <span class="add-cart-badge">Add to cart</span>
+          </div>
+          <div class="product-name">Pastel Bloom</div>
+          <div class="price-row"><span class="current">₱449</span><span class="old">₱699</span></div>
+          <div class="stars">★★★★★</div>
+          <details class="product-description">
+            <summary>Description</summary>
+            <p>A pastel mix of aqua, white, and purple crochet flowers, gathered into a bright bouquet.</p>
+            <p><strong>Perfect for:</strong> thank-you gifts, celebrations, and colorful displays.</p>
+          </details>
+        </article>
+
+        <article class="product-card" tabindex="0" data-product="Greenery Love" data-price="549" data-category="flowers">
+          <div class="image-wrap">
+            <img src="assets/bouquet-greenery.jpg" alt="Green crochet bouquet with leafy stems and white blossoms." />
+            <span class="add-cart-badge">Add to cart</span>
+          </div>
+          <div class="product-name">Greenery Love</div>
+          <div class="price-row"><span class="current">₱549</span><span class="old">₱849</span></div>
+          <div class="stars">★★★★★</div>
+          <details class="product-description">
+            <summary>Description</summary>
+            <p>A fresh green crochet arrangement with leafy accents and small white blooms, wrapped in a natural style.</p>
+            <p><strong>Perfect for:</strong> nature lovers, birthdays, and cheerful surprises.</p>
+          </details>
+        </article>
+
+        <article class="product-card" tabindex="0" data-product="Sunflower Gift" data-price="499" data-category="more">
+          <div class="image-wrap">
+            <img src="assets/bouquet-sunflower.jpg" alt="Two handmade crochet sunflowers with brown centers." />
+            <span class="add-cart-badge">Add to cart</span>
+          </div>
+          <div class="product-name">Sunflower Gift</div>
+          <div class="price-row"><span class="current">₱499</span><span class="old">₱799</span></div>
+          <div class="stars">★★★★★</div>
+          <details class="product-description">
+            <summary>Description</summary>
+            <p>A sunny crochet sunflower bouquet with warm golden centers and leafy stems, wrapped for gifting.</p>
+            <p><strong>Perfect for:</strong> congratulations, birthdays, and sending a little sunshine.</p>
+          </details>
+        </article>
+
+        <article class="product-card" tabindex="0" data-product="Rose Bloom" data-price="549" data-category="birthdays">
+          <div class="image-wrap">
+            <img src="assets/bouquet-rose.jpg" alt="Red and pink crochet flowers arranged in a bright gift wrap." />
+            <span class="add-cart-badge">Add to cart</span>
+          </div>
+          <div class="product-name">Rose Bloom</div>
+          <div class="price-row"><span class="current">₱549</span><span class="old">₱899</span></div>
+          <div class="stars">★★★★★</div>
+          <details class="product-description">
+            <summary>Description</summary>
+            <p>A vibrant bouquet of red and pink crochet flowers, wrapped in bold colors for a memorable gift.</p>
+            <p><strong>Perfect for:</strong> anniversaries, birthdays, and romantic surprises.</p>
+          </details>
+        </article>
+
+        <article class="product-card" tabindex="0" data-product="Graduation Bloom" data-price="599" data-category="occasions">
+          <div class="image-wrap">
+            <img src="assets/bouquet-graduation.jpg" alt="Graduation-themed crochet bouquet with a keepsake graduate doll." />
+            <span class="add-cart-badge">Add to cart</span>
+          </div>
+          <div class="product-name">Graduation Bloom</div>
+          <div class="price-row"><span class="current">₱599</span><span class="old">₱999</span></div>
+          <div class="stars">★★★★★</div>
+          <details class="product-description">
+            <summary>Description</summary>
+            <p>A celebration-ready crochet bouquet inspired by custom graduation keepsakes, with a special finishing touch for the graduate.</p>
+            <p><strong>Perfect for:</strong> graduations, congratulations, and milestone moments.</p>
+          </details>
+        </article>
+
+      </div>
+
+      <section class="sold-out-section" id="soldOutSection" aria-labelledby="soldOutTitle">
+        <div class="products-header">
+          <h2 id="soldOutTitle">SOLD OUT</h2>
+        </div>
+        <div class="product-grid sold-out-grid">
+          <article class="product-card sold-out-product-card">
+            <div class="image-wrap"><img src="assets/bouquet-tulip-pink.jpg" alt="Pink crochet tulip bouquet." /><span class="sold-out-badge">SOLD OUT</span></div>
+            <div class="product-name">Tulip Bliss</div><div class="price-row"><span class="current">₱499</span><span class="old">₱799</span></div><div class="stars">★★★★★</div>
+            <details class="product-description"><summary>Description</summary><p>This design is currently sold out.</p></details>
+          </article>
+          <article class="product-card sold-out-product-card">
+            <div class="image-wrap"><img src="assets/bouquet-sunflower.jpg" alt="Crochet sunflower bouquet." /><span class="sold-out-badge">SOLD OUT</span></div>
+            <div class="product-name">Sunflower Joy</div><div class="price-row"><span class="current">₱599</span><span class="old">₱899</span></div><div class="stars">★★★★★</div>
+            <details class="product-description"><summary>Description</summary><p>This design is currently sold out.</p></details>
+          </article>
+          <article class="product-card sold-out-product-card">
+            <div class="image-wrap"><img src="assets/bouquet-rose.jpg" alt="Pink and red crochet rose bouquet." /><span class="sold-out-badge">SOLD OUT</span></div>
+            <div class="product-name">Pink Romance</div><div class="price-row"><span class="current">₱549</span><span class="old">₱849</span></div><div class="stars">★★★★★</div>
+            <details class="product-description"><summary>Description</summary><p>This design is currently sold out.</p></details>
+          </article>
+          <article class="product-card sold-out-product-card">
+            <div class="image-wrap"><img src="assets/bouquet-pastel.jpg" alt="Pastel crochet bouquet with blue and white blooms." /><span class="sold-out-badge">SOLD OUT</span></div>
+            <div class="product-name">Blue Serenity</div><div class="price-row"><span class="current">₱499</span><span class="old">₱799</span></div><div class="stars">★★★★★</div>
+            <details class="product-description"><summary>Description</summary><p>This design is currently sold out.</p></details>
+          </article>
+          <article class="product-card sold-out-product-card">
+            <div class="image-wrap"><img src="assets/bouquet-classic.png" alt="Classic handmade crochet flower bouquet." /><span class="sold-out-badge">SOLD OUT</span></div>
+            <div class="product-name">Classic Love</div><div class="price-row"><span class="current">₱549</span><span class="old">₱849</span></div><div class="stars">★★★★★</div>
+            <details class="product-description"><summary>Description</summary><p>This design is currently sold out.</p></details>
+          </article>
+          <article class="product-card sold-out-product-card">
+            <div class="image-wrap"><img src="assets/bouquet-lavender.jpg" alt="Purple crochet lavender bouquet." /><span class="sold-out-badge">SOLD OUT</span></div>
+            <div class="product-name">Lavender Fields</div><div class="price-row"><span class="current">₱499</span><span class="old">₱799</span></div><div class="stars">★★★★★</div>
+            <details class="product-description"><summary>Description</summary><p>This design is currently sold out.</p></details>
+          </article>
+          <article class="product-card sold-out-product-card">
+            <div class="image-wrap"><img src="assets/bouquet-pastel.jpg" alt="Soft pastel crochet flower bouquet." /><span class="sold-out-badge">SOLD OUT</span></div>
+            <div class="product-name">Peachy Dreams</div><div class="price-row"><span class="current">₱549</span><span class="old">₱849</span></div><div class="stars">★★★★★</div>
+            <details class="product-description"><summary>Description</summary><p>This design is currently sold out.</p></details>
+          </article>
+          <article class="product-card sold-out-product-card">
+            <div class="image-wrap"><img src="assets/bouquet-rose.jpg" alt="Red crochet rose bouquet." /><span class="sold-out-badge">SOLD OUT</span></div>
+            <div class="product-name">Heartfelt</div><div class="price-row"><span class="current">₱599</span><span class="old">₱899</span></div><div class="stars">★★★★★</div>
+            <details class="product-description"><summary>Description</summary><p>This design is currently sold out.</p></details>
+          </article>
+          <article class="product-card sold-out-product-card">
+            <div class="image-wrap"><img src="assets/bouquet-greenery.jpg" alt="White and green crochet flower bouquet." /><span class="sold-out-badge">SOLD OUT</span></div>
+            <div class="product-name">Pure Elegance</div><div class="price-row"><span class="current">₱499</span><span class="old">₱799</span></div><div class="stars">★★★★★</div>
+            <details class="product-description"><summary>Description</summary><p>This design is currently sold out.</p></details>
+          </article>
+          <article class="product-card sold-out-product-card">
+            <div class="image-wrap"><img src="assets/bouquet-lavender.jpg" alt="Purple crochet flower bouquet." /><span class="sold-out-badge">SOLD OUT</span></div>
+            <div class="product-name">Royal Purple</div><div class="price-row"><span class="current">₱599</span><span class="old">₱899</span></div><div class="stars">★★★★★</div>
+            <details class="product-description"><summary>Description</summary><p>This design is currently sold out.</p></details>
+          </article>
+          <article class="product-card sold-out-product-card">
+            <div class="image-wrap"><img src="assets/bouquet-sunflower.jpg" alt="Yellow crochet sunflower bouquet." /><span class="sold-out-badge">SOLD OUT</span></div>
+            <div class="product-name">Sunny Days</div><div class="price-row"><span class="current">₱549</span><span class="old">₱849</span></div><div class="stars">★★★★★</div>
+            <details class="product-description"><summary>Description</summary><p>This design is currently sold out.</p></details>
+          </article>
+          <article class="product-card sold-out-product-card">
+            <div class="image-wrap"><img src="assets/bouquet-tulip-pink.jpg" alt="Pink crochet flower bouquet." /><span class="sold-out-badge">SOLD OUT</span></div>
+            <div class="product-name">Sweet Dreams</div><div class="price-row"><span class="current">₱499</span><span class="old">₱799</span></div><div class="stars">★★★★★</div>
+            <details class="product-description"><summary>Description</summary><p>This design is currently sold out.</p></details>
+          </article>
+        </div>
+      </section>
+
+      <section class="promotions-section" id="promotionsSection" aria-labelledby="promotionsTitle">
+        <div class="products-header">
+          <h2 id="promotionsTitle">Promotions &amp; Special Gifts</h2>
+        </div>
+        <p class="reviews-intro">Promotions are subject to availability and confirmation by Fleuri. Please contact us to confirm current terms before ordering.</p>
+        <div class="promotion-urgency" aria-label="Availability and delivery information">
+          <div class="promotion-urgency-item">
+            <strong>Limited stock</strong>
+            <span>Ask us to confirm what's still available before ordering.</span>
+          </div>
+          <div class="promotion-urgency-item">
+            <strong>Today's deals</strong>
+            <span>Message us to confirm which offers are active today.</span>
+          </div>
+          <div class="promotion-urgency-item">
+            <strong>Same-day delivery</strong>
+            <span>May be available in CDO; confirm your barangay and order cutoff with us.</span>
+          </div>
+        </div>
+        <div class="product-grid promotion-grid">
+          <article class="product-card promotion-card" tabindex="0" data-product="Crochet Flower Keychain" data-price="149" data-promotion-type="gift">
+            <div class="image-wrap">
+              <img src="assets/bouquet-tulip-pink.jpg" alt="Crochet flower keychain gift." />
+              <span class="promotion-art"><span class="promotion-art-label">♧ Additional gift</span></span>
+              <span class="add-cart-badge">Add to cart</span>
+            </div>
+            <div class="product-name">Crochet Flower Keychain</div>
+            <div class="price-row"><span class="current">₱149</span></div>
+            <div class="stars" aria-label="5 out of 5 stars">★★★★★</div>
+            <details class="product-description"><summary>Description</summary><p>A handmade crochet flower keychain, available as an additional gift.</p></details>
+          </article>
+          <article class="product-card promotion-card" tabindex="0" data-product="Crochet Flower Hair Clip (Set of 2)" data-price="129" data-promotion-type="gift">
+            <div class="image-wrap">
+              <img src="assets/bouquet-pastel.jpg" alt="Handcrafted crochet flower hair clips." />
+              <span class="promotion-art"><span class="promotion-art-label">♧ Additional gift</span></span>
+              <span class="add-cart-badge">Add to cart</span>
+            </div>
+            <div class="product-name">Crochet Flower Hair Clip (Set of 2)</div>
+            <div class="price-row"><span class="current">₱129</span></div>
+            <div class="stars" aria-label="5 out of 5 stars">★★★★★</div>
+            <details class="product-description"><summary>Description</summary><p>A pair of crochet flower hair clips, available as an additional gift.</p></details>
+          </article>
+          <article class="product-card promotion-card" tabindex="0" data-product="Crochet Flower Bag Charm" data-price="169" data-promotion-type="gift">
+            <div class="image-wrap">
+              <img src="assets/bouquet-classic.png" alt="Crochet flower bag charm gift." />
+              <span class="promotion-art"><span class="promotion-art-label">♧ Additional gift</span></span>
+              <span class="add-cart-badge">Add to cart</span>
+            </div>
+            <div class="product-name">Crochet Flower Bag Charm</div>
+            <div class="price-row"><span class="current">₱169</span></div>
+            <div class="stars" aria-label="5 out of 5 stars">★★★★★</div>
+            <details class="product-description"><summary>Description</summary><p>A crochet flower charm for a bag or keys, available as an additional gift.</p></details>
+          </article>
+          <article class="product-card promotion-card" tabindex="0" data-product="Flower Bouquet + Chocolate Bundle" data-price="699" data-promotion-type="gift">
+            <div class="image-wrap">
+              <img src="assets/bouquet-tulip-pink.jpg" alt="Handmade flower bouquet gift bundle." />
+              <span class="promotion-art"><span class="promotion-art-label">♧ Bundle gift</span></span>
+              <span class="add-cart-badge">Add to cart</span>
+            </div>
+            <div class="product-name">Flower Bouquet + Chocolate Bundle</div>
+            <div class="price-row"><span class="current">₱699</span><span class="old">₱849</span></div>
+            <div class="stars" aria-label="5 out of 5 stars">★★★★★</div>
+            <details class="product-description"><summary>Description</summary><p>A flower bouquet and chocolate bundle. Chocolate selection may vary.</p></details>
+          </article>
+          <article class="product-card promotion-card" tabindex="0" data-product="Buy 2 Get 1 Free (Selected Bouquets)" data-price="998" data-promotion-type="deal" data-cart-note="Promotion terms and bouquet availability must be confirmed with Fleuri before payment.">
+            <div class="image-wrap">
+              <img src="assets/bouquet-tulip-pink.jpg" alt="Selected crochet bouquets included in the Buy 2 Get 1 Free offer." />
+              <span class="promotion-art"><span class="promotion-art-label">Buy 2<br />Get 1 Free</span></span>
+              <span class="add-cart-badge">Add to cart</span>
+            </div>
+            <div class="product-name">Buy 2 Get 1 Free<br />(Selected Bouquets)</div>
+            <div class="price-row"><span class="current">₱998</span><span class="old">₱1,497</span></div>
+            <div class="stars" aria-label="5 out of 5 stars">★★★★★</div>
+            <details class="product-description"><summary>Description</summary><p>Buy two selected bouquets and receive one additional selected bouquet free. Confirm eligible designs and availability with Fleuri.</p></details>
+          </article>
+          <article class="product-card promotion-card" tabindex="0" data-product="₱100 OFF (Orders ₱1,000+)" data-price="0" data-promotion-type="deal" data-cart-note="Offer request only; the discount is not applied to the cart total. Confirm eligibility with Fleuri.">
+            <div class="image-wrap">
+              <img src="assets/bouquet-lavender.jpg" alt="Crochet bouquet featured in the one hundred peso discount offer." />
+              <span class="promotion-art"><span class="promotion-art-label">₱100 OFF<br /><small>Orders ₱1,000+</small></span></span>
+              <span class="add-cart-badge">Add to cart</span>
+            </div>
+            <div class="product-name">₱100 OFF<br />(Orders ₱1,000+)</div>
+            <div class="price-row"><span class="current">Save ₱100</span></div>
+            <div class="stars" aria-label="5 out of 5 stars">★★★★★</div>
+            <details class="product-description"><summary>Description</summary><p>Get ₱100 off an order of ₱1,000 or more. Ask Fleuri to confirm eligibility before payment.</p></details>
+          </article>
+          <article class="product-card promotion-card" tabindex="0" data-product="Free Gift Wrap (For All Bouquets)" data-price="0" data-promotion-type="deal" data-cart-note="Gift wrap request only; confirm availability with Fleuri before payment.">
+            <div class="image-wrap">
+              <img src="assets/bouquet-rose.jpg" alt="Crochet bouquet eligible for the free gift wrap offer." />
+              <span class="promotion-art"><span class="promotion-art-label">Free<br />Gift Wrap</span></span>
+              <span class="add-cart-badge">Add to cart</span>
+            </div>
+            <div class="product-name">Free Gift Wrap<br />(For All Bouquets)</div>
+            <div class="price-row"><span class="current">Complimentary</span></div>
+            <div class="stars" aria-label="5 out of 5 stars">★★★★★</div>
+            <details class="product-description"><summary>Description</summary><p>Complimentary gift wrapping is available with bouquet orders, subject to confirmation at checkout.</p></details>
+          </article>
+          <article class="product-card promotion-card" tabindex="0" data-product="Custom Bouquet (Any Occasion)" data-price="599" data-promotion-type="deal" data-cart-note="Final price depends on the requested design. Confirm details with Fleuri before payment.">
+            <div class="image-wrap">
+              <img src="assets/bouquet-pastel.jpg" alt="Custom crochet bouquet promotion for any occasion." />
+              <span class="promotion-art"><span class="promotion-art-label">Custom Bouquet<br /><small>(Any Occasion)</small></span></span>
+              <span class="add-cart-badge">Add to cart</span>
+            </div>
+            <div class="product-name">Custom Bouquet<br />(Any Occasion)</div>
+            <div class="price-row"><span class="current">₱599</span><span class="old">₱799</span></div>
+            <div class="stars" aria-label="5 out of 5 stars">★★★★★</div>
+            <details class="product-description"><summary>Description</summary><p>Request a custom bouquet for a special occasion. Final price depends on the design and confirmed details.</p></details>
+          </article>
+        </div>
+      </section>
+
+      <section class="gourmet-coming-soon" id="gourmetComingSoon" aria-label="Gourmet Delights coming soon" hidden>
+        <img src="assets/gourmet-coming-soon.png" alt="Gourmet Delights coming soon." />
+      </section>
+
+      <section class="customer-reviews" id="customerReviews" aria-labelledby="reviewsTitle">
+        <h2 id="reviewsTitle">Customer Reviews &amp; Stories</h2>
+        <p class="reviews-intro">A few kind words and special moments shared by customers who received Fleuri crochet bouquets.</p>
+        <div class="review-grid">
+          <article class="review-card">
+            <span class="review-story-label">Customer message</span>
+            <blockquote>“Thank you for the very lovely bouquet. I’ll order again next time!”</blockquote>
+            <span class="review-author">Jen B. · Customer message, translated</span>
+          </article>
+          <article class="review-card">
+            <span class="review-story-label">Customer message</span>
+            <blockquote>“Grace was so happy with the flowers and loved how beautifully they were made.”</blockquote>
+            <span class="review-author">Customer message, translated</span>
+          </article>
+          <article class="review-card">
+            <span class="review-story-label">Customer order highlight</span>
+            <blockquote>A custom mini-me bouquet with graduation details and a matching bouquet keychain made a thoughtful keepsake for a proud milestone.</blockquote>
+            <span class="review-author">Shared graduation celebration</span>
+          </article>
+        </div>
+        <div class="review-gallery">
+          <h3>Shared Customer Photos</h3>
+          <div class="review-gallery-controls">
+            <button class="review-carousel-toggle" id="reviewCarouselToggle" type="button" aria-controls="reviewPhotoViewport" aria-label="Pause customer photo carousel" aria-pressed="false">Pause</button>
+          </div>
+          <div class="review-photo-viewport" id="reviewPhotoViewport" aria-label="Customer photos moving from right to left">
+            <div class="review-photo-track" id="reviewPhotoTrack">
+              <div class="review-photo-group" id="reviewPhotoGroup">
+                <figure class="review-photo">
+                  <img src="assets/customer-review-01.jpg" alt="Customer post showing a handmade mini-me bouquet and matching keepsakes." loading="lazy" />
+                  <figcaption>A custom mini-me bouquet made for a special celebration.</figcaption>
+                </figure>
+                <figure class="review-photo">
+                  <img src="assets/customer-review-02.jpg" alt="Customer comment thanking the shop and saying they would order again." loading="lazy" />
+                  <figcaption>A customer shares thanks and says they would order again.</figcaption>
+                </figure>
+                <figure class="review-photo">
+                  <img src="assets/customer-review-03.jpg" alt="Recipient holding a blue-themed mini bouquet." loading="lazy" />
+                  <figcaption>A blue-themed mini bouquet shared by its happy recipient.</figcaption>
+                </figure>
+                <figure class="review-photo">
+                  <img src="assets/customer-review-04.jpg" alt="Customer chat with a bouquet photo and an anniversary thank-you." loading="lazy" />
+                  <figcaption>A bouquet sent as a thoughtful anniversary surprise.</figcaption>
+                </figure>
+                <figure class="review-photo">
+                  <img src="assets/customer-review-05.jpg" alt="Graduation milestone photo shared with a custom bouquet order." loading="lazy" />
+                  <figcaption>A crochet bouquet celebrating a graduation milestone.</figcaption>
+                </figure>
+                <figure class="review-photo">
+                  <img src="assets/customer-review-06.jpg" alt="Customer chat sharing a happy message about the flowers." loading="lazy" />
+                  <figcaption>A happy message about the flowers and handmade details.</figcaption>
+                </figure>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <section class="our-story-card" aria-labelledby="ourStoryTitle">
+        <p class="our-story-eyebrow">The Fleuri Story</p>
+        <h2 id="ourStoryTitle">Our Story</h2>
+        <div class="our-story-copy">
+          <p>What started in 2022 as a crochet hobby to de-stress from school quickly turned into a passion. I taught myself the basics by watching simple YouTube tutorials, spending a full year practicing and perfecting my craft.</p>
+          <p>In 2023, encouraged by a classmate who loved my work, I decided to start selling my creations. Demand grew fast, and I officially launched my own business right from my classroom using the limited resources I had.</p>
+        </div>
+        <div class="our-story-details">
+          <section aria-labelledby="ourVisionTitle">
+            <h3 id="ourVisionTitle">Our Vision</h3>
+            <p>To become a trusted and recognized handmade brand known for beautiful products, excellent service, and gifts that bring lasting joy.</p>
+          </section>
+          <section aria-labelledby="ourValuesTitle">
+            <h3 id="ourValuesTitle">Our Values and Purpose</h3>
+            <p>Every FLUERI bouquet is made with patience, care, and attention to detail. We value every customer, respect deadlines, and strive to make every order special.</p>
+          </section>
+        </div>
+      </section>
+      <div class="footer-grid">
+        <div class="footer-brand" id="aboutUs">
+          <h2>ABOUT US</h2>
+          <p>Fleuri is a premium online gift shop serving Cagayan de Oro City. We offer handcrafted floral arrangements, gourmet treats, and thoughtful gifts tailored for life’s most special occasions. Through beautiful curation, meticulous packaging, and seamless delivery, we aim to provide a five-star gifting experience—bringing happiness to your loved ones, one beautiful gift at a time.</p>
+          <div class="footer-social-icons" role="group" aria-label="Social media icons">
+            <span role="img" aria-label="X">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.9 2H22l-6.8 7.8L23.2 22h-6.3L12 14.6 5.5 22H2.3l7.3-8.4L2 2h6.4l4.4 6.7L18.9 2Zm-1.1 18h1.7L7.5 3.9H5.7L17.8 20Z" /></svg>
+            </span>
+            <span role="img" aria-label="Facebook">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.5 21v-8h2.7l.4-3.1h-3.1v-2c0-.9.3-1.5 1.6-1.5h1.7V3.6c-.3 0-1.3-.1-2.5-.1-2.5 0-4.2 1.5-4.2 4.3v2.1H7.3V13h2.8v8h3.4Z" /></svg>
+            </span>
+            <span role="img" aria-label="LinkedIn">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.2 8.7H2V21h3.2V8.7ZM3.6 3a1.9 1.9 0 1 0 0 3.8 1.9 1.9 0 0 0 0-3.8ZM22 13.9c0-3.7-2-5.5-4.7-5.5a4 4 0 0 0-3.6 2V8.7h-3.2V21h3.2v-6.1c0-1.6.3-3.2 2.4-3.2s2.1 1.9 2.1 3.3V21h3.2l.6-7.1Z" /></svg>
+            </span>
+            <span role="img" aria-label="YouTube">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.6 3.6 12 3.6 12 3.6s-7.6 0-9.4.5A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.8.5 9.4.5 9.4.5s7.6 0 9.4-.5a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8ZM9.6 15.6V8.4l6.3 3.6-6.3 3.6Z" /></svg>
+            </span>
+            <span role="img" aria-label="Instagram">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5Zm0 2.2A2.8 2.8 0 0 0 4.2 7v10A2.8 2.8 0 0 0 7 19.8h10a2.8 2.8 0 0 0 2.8-2.8V7A2.8 2.8 0 0 0 17 4.2H7Zm5 2.3a5.5 5.5 0 1 1 0 11 5.5 5.5 0 0 1 0-11Zm0 2.2a3.3 3.3 0 1 0 0 6.6 3.3 3.3 0 0 0 0-6.6Zm5.7-3.4a1.3 1.3 0 1 1 0 2.6 1.3 1.3 0 0 1 0-2.6Z" /></svg>
+            </span>
+            <span role="img" aria-label="Reddit">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a1.4 1.4 0 0 1 2.7-.5l3.2.7a1.7 1.7 0 1 1-.3 1.6l-3.1-.7-.8 3.2c3 .2 5.4 1.5 6.1 3.3a2.1 2.1 0 0 1-.7 4.1 2.2 2.2 0 0 1-.8-.2c-.9 2.2-3.4 3.6-6.3 3.6s-5.4-1.4-6.3-3.6a2.2 2.2 0 0 1-.8.2 2.1 2.1 0 0 1-.7-4.1c.7-1.8 3.1-3.1 6.1-3.3l.9-3.7a1.4 1.4 0 0 1 .8-.6ZM9 12a1.1 1.1 0 1 0 0 2.2A1.1 1.1 0 0 0 9 12Zm6 0a1.1 1.1 0 1 0 0 2.2 1.1 1.1 0 0 0 0-2.2Zm-6.2 4c.8.8 1.9 1.2 3.2 1.2s2.4-.4 3.2-1.2l-.9-.8c-.5.5-1.3.8-2.3.8s-1.8-.3-2.3-.8l-.9.8Z" /></svg>
+            </span>
+          </div>
+        </div>
+        <div class="footer-column">
+          <h3>Explore</h3>
+          <nav class="footer-links" aria-label="Footer navigation">
+            <a href="#productsTitle">Shop our products</a>
+            <a href="#customerReviews">Shared customer photos</a>
+          </nav>
+        </div>
+        <div class="footer-column footer-contact">
+          <h3>Contact us</h3>
+          <div class="footer-links">
+            <a href="mailto:Fleuri.crochet@gmail.com">Fleuri.crochet@gmail.com</a>
+            <a href="tel:09168501249">09168501249</a>
+          </div>
+          <p class="footer-location">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 2.5a7.5 7.5 0 0 0-7.5 7.5c0 5.4 7.5 11.5 7.5 11.5S19.5 15.4 19.5 10A7.5 7.5 0 0 0 12 2.5Zm0 10.25A2.75 2.75 0 1 1 12 7.25a2.75 2.75 0 0 1 0 5.5Z" />
+            </svg>
+            <span>Cagayan de Oro City</span>
+          </p>
+        </div>
+        <div class="footer-column">
+          <h3>Delivery</h3>
+          <p>Delivering across Cagayan de Oro City, including all 80 barangays.</p>
+        </div>
+      </div>
+      <div class="footer-bottom">© 2026 Fleuri Crochet Flowers</div>
+    </footer>
+  </div>
+
+  <button class="contact-us-btn" id="openContactDialog" type="button" aria-haspopup="dialog" aria-controls="contactDialog">
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M12 3C6.48 3 2 6.94 2 11.8c0 2.62 1.3 4.97 3.36 6.54L4.5 22l4.05-2.02c1.08.39 2.25.6 3.45.6 5.52 0 10-3.94 10-8.8S17.52 3 12 3Z" />
+    </svg>
+    <span>Contact Us</span>
+  </button>
+
+  <dialog class="contact-dialog" id="contactDialog" aria-labelledby="contactDialogTitle" aria-describedby="contactDialogAddress">
+    <button class="contact-dialog-close" id="closeContactDialog" type="button" aria-label="Close contact form">×</button>
+    <h2 id="contactDialogTitle">Contact Us</h2>
+    <p class="contact-dialog-address" id="contactDialogAddress">Cagayan de Oro City</p>
+    <form class="contact-form" id="contactForm">
+      <label for="contactName">
+        Your name
+        <input id="contactName" name="name" type="text" autocomplete="name" placeholder="customer" required />
+      </label>
+      <label for="contactEmail">
+        Email address
+        <input id="contactEmail" name="email" type="email" autocomplete="email" placeholder="customer@gmail.com" required />
+      </label>
+      <label for="contactMessage">
+        Message
+        <textarea id="contactMessage" name="message" placeholder="Type your message for Fleuri here..." required></textarea>
+      </label>
+      <p class="contact-form-note">Send Message opens your email app with your message ready to send.</p>
+      <button class="contact-submit" type="submit">Send Message</button>
+    </form>
+  </dialog>
+
+  <dialog class="newsletter-dialog" id="newsletterDialog" aria-labelledby="newsletterTitle" aria-describedby="newsletterIntro">
+    <button class="newsletter-close" id="newsletterClose" type="button" aria-label="Close welcome offer">×</button>
+    <h2 id="newsletterTitle">Join our mailing list and get 20% off your first purchase</h2>
+    <p class="newsletter-intro" id="newsletterIntro">Choose email or contact details to request your welcome discount.</p>
+    <div class="newsletter-code" aria-label="Discount code">WELCOMETOFLEURI20%</div>
+    <form class="newsletter-form" id="newsletterForm">
+      <fieldset class="newsletter-methods">
+        <legend>How would you like to request the offer?</legend>
+        <label><input type="radio" name="contactMethod" value="email" checked /> Email address</label>
+        <label><input type="radio" name="contactMethod" value="phone" /> Name and mobile number</label>
+      </fieldset>
+      <div class="newsletter-fields" id="newsletterEmailFields">
+        <input id="newsletterEmail" name="email" type="email" autocomplete="email" placeholder="Your email address" aria-label="Your email address" required />
+      </div>
+      <div class="newsletter-fields" id="newsletterPhoneFields" hidden>
+        <input id="newsletterName" name="name" type="text" autocomplete="name" placeholder="Your name" aria-label="Your name" disabled required />
+        <input id="newsletterPhone" name="phone" type="tel" autocomplete="tel" placeholder="Your mobile number" aria-label="Your mobile number" pattern="[0-9+() -]{7,20}" disabled required />
+      </div>
+      <div class="newsletter-actions">
+        <button class="newsletter-submit" type="submit">Love it, sign me up</button>
+        <button class="newsletter-decline" id="newsletterDecline" type="button">No, thanks</button>
+      </div>
+      <p class="newsletter-note">Your email app will open with your request. Send it to Fleuri to complete signup and quote the code; the offer is applied manually. This website does not store or submit your contact details.</p>
+    </form>
+  </dialog>
+
+  <dialog class="account-dialog" id="accountDialog" aria-labelledby="accountDialogTitle" aria-describedby="accountDialogMessage">
+    <button class="account-dialog-close" type="button" aria-label="Close">×</button>
+    <h2 id="accountDialogTitle"></h2>
+    <p id="accountDialogMessage" class="account-notice" aria-live="polite"></p>
+    <div id="accountDialogContent"></div>
+    <button class="account-dialog-done" type="button">Close</button>
+  </dialog>
+
+  <div class="location-modal" id="locationModal" aria-hidden="true">
+    <div class="location-panel" role="dialog" aria-modal="true" aria-labelledby="locationTitle">
+      <button class="location-close" type="button" aria-label="Close delivery selection">×</button>
+      <h2 id="locationTitle">Choose a barangay in Cagayan de Oro City</h2>
+      <p class="location-help">Delivery is available across all 80 city barangays.</p>
+
+      <div class="location-search-wrap">
+        <input class="location-search" id="locationSearch" type="text" placeholder="Search barangay" aria-label="Search barangay" />
+        <span class="search-icon">⌕</span>
+      </div>
+
+      <div class="location-list">
+        <button class="location-item" type="button">Agusan</button>
+        <button class="location-item" type="button">Baikingon</button>
+        <button class="location-item" type="button">Balubal</button>
+        <button class="location-item" type="button">Balulang</button>
+        <button class="location-item" type="button">Barangay 1</button>
+        <button class="location-item" type="button">Barangay 2</button>
+        <button class="location-item" type="button">Barangay 3</button>
+        <button class="location-item" type="button">Barangay 4</button>
+        <button class="location-item" type="button">Barangay 5</button>
+        <button class="location-item" type="button">Barangay 6</button>
+        <button class="location-item" type="button">Barangay 7</button>
+        <button class="location-item" type="button">Barangay 8</button>
+        <button class="location-item" type="button">Barangay 9</button>
+        <button class="location-item" type="button">Barangay 10</button>
+        <button class="location-item" type="button">Barangay 11</button>
+        <button class="location-item" type="button">Barangay 12</button>
+        <button class="location-item" type="button">Barangay 13</button>
+        <button class="location-item" type="button">Barangay 14</button>
+        <button class="location-item" type="button">Barangay 15</button>
+        <button class="location-item" type="button">Barangay 16</button>
+        <button class="location-item" type="button">Barangay 17</button>
+        <button class="location-item" type="button">Barangay 18</button>
+        <button class="location-item" type="button">Barangay 19</button>
+        <button class="location-item" type="button">Barangay 20</button>
+        <button class="location-item" type="button">Barangay 21</button>
+        <button class="location-item" type="button">Barangay 22</button>
+        <button class="location-item" type="button">Barangay 23</button>
+        <button class="location-item" type="button">Barangay 24</button>
+        <button class="location-item" type="button">Barangay 25</button>
+        <button class="location-item" type="button">Barangay 26</button>
+        <button class="location-item" type="button">Barangay 27</button>
+        <button class="location-item" type="button">Barangay 28</button>
+        <button class="location-item" type="button">Barangay 29</button>
+        <button class="location-item" type="button">Barangay 30</button>
+        <button class="location-item" type="button">Barangay 31</button>
+        <button class="location-item" type="button">Barangay 32</button>
+        <button class="location-item" type="button">Barangay 33</button>
+        <button class="location-item" type="button">Barangay 34</button>
+        <button class="location-item" type="button">Barangay 35</button>
+        <button class="location-item" type="button">Barangay 36</button>
+        <button class="location-item" type="button">Barangay 37</button>
+        <button class="location-item" type="button">Barangay 38</button>
+        <button class="location-item" type="button">Barangay 39</button>
+        <button class="location-item" type="button">Barangay 40</button>
+        <button class="location-item" type="button">Bayabas</button>
+        <button class="location-item" type="button">Bayanga</button>
+        <button class="location-item" type="button">Besigan</button>
+        <button class="location-item" type="button">Bonbon</button>
+        <button class="location-item" type="button">Bugo</button>
+        <button class="location-item" type="button">Bulua</button>
+        <button class="location-item" type="button">Camaman-an</button>
+        <button class="location-item" type="button">Canito-an</button>
+        <button class="location-item" type="button">Carmen</button>
+        <button class="location-item" type="button">Consolacion</button>
+        <button class="location-item" type="button">Cugman</button>
+        <button class="location-item" type="button">Dansolihon</button>
+        <button class="location-item" type="button">F. S. Catanico</button>
+        <button class="location-item" type="button">Gusa</button>
+        <button class="location-item" type="button">Indahag</button>
+        <button class="location-item" type="button">Iponan</button>
+        <button class="location-item" type="button">Kauswagan</button>
+        <button class="location-item" type="button">Lapasan</button>
+        <button class="location-item" type="button">Lumbia</button>
+        <button class="location-item" type="button">Macabalan</button>
+        <button class="location-item" type="button">Macasandig</button>
+        <button class="location-item" type="button">Mambuaya</button>
+        <button class="location-item" type="button">Nazareth</button>
+        <button class="location-item" type="button">Pagalungan</button>
+        <button class="location-item" type="button">Pagatpat</button>
+        <button class="location-item" type="button">Patag</button>
+        <button class="location-item" type="button">Pigsag-an</button>
+        <button class="location-item" type="button">Puerto</button>
+        <button class="location-item" type="button">Puntod</button>
+        <button class="location-item" type="button">San Simon</button>
+        <button class="location-item" type="button">Tablon</button>
+        <button class="location-item" type="button">Taglimao</button>
+        <button class="location-item" type="button">Tagpangi</button>
+        <button class="location-item" type="button">Tignapoloan</button>
+        <button class="location-item" type="button">Tuburan</button>
+        <button class="location-item" type="button">Tumpagon</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="search-modal" id="searchModal" aria-hidden="true">
+    <div class="search-panel" role="dialog" aria-modal="true" aria-labelledby="searchTitle">
+      <button class="search-close" type="button" aria-label="Close search">×</button>
+      <label class="search-label" id="searchTitle" for="productSearch">Search gifts</label>
+      <input class="search-input" id="productSearch" type="search" placeholder="Search by product name or occasion" aria-label="Search products" />
+      <div class="search-results" id="searchResults"></div>
+    </div>
+  </div>
+
+  <div class="cart-drawer" id="cartDrawer" aria-hidden="true">
+    <div class="cart-panel">
+      <div class="cart-header">
+        <h3>My Cart</h3>
+        <button class="cart-close" type="button" aria-label="Close cart">×</button>
+      </div>
+
+      <div class="cart-items" id="cartItems"></div>
+
+      <div class="cart-summary">
+        <div class="summary-row"><span>Total</span><strong id="cartTotal">₱0</strong></div>
+        <button class="action-btn checkout-btn" type="button">Proceed to Payment</button>
+
+        <div class="qr-panel" id="qrPanel" aria-label="Payment methods">
+          <p class="fulfillment-summary" id="fulfillmentSummary" hidden></p>
+          <p class="payment-method-title">Choose a payment method</p>
+          <div class="payment-method-options" role="group" aria-label="Payment method">
+            <button class="payment-method-option" type="button" data-payment-method="gcash" aria-pressed="true">GCash</button>
+            <button class="payment-method-option" type="button" data-payment-method="maya" aria-pressed="false">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3h8v8H3V3Zm2 2v4h4V5H5Zm8-2h8v8h-8V3Zm2 2v4h4V5h-4ZM3 13h8v8H3v-8Zm2 2v4h4v-4H5Zm8-2h3v3h-3v-3Zm5 0h3v5h-3v-5Zm-5 5h3v3h-3v-3Zm5 2h3v1h-3v-1Z" /></svg>
+              Maya
+            </button>
+            <button class="payment-method-option" type="button" data-payment-method="maribank" aria-pressed="false">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3h8v8H3V3Zm2 2v4h4V5H5Zm8-2h8v8h-8V3Zm2 2v4h4V5h-4ZM3 13h8v8H3v-8Zm2 2v4h4v-4H5Zm8-2h3v3h-3v-3Zm5 0h3v5h-3v-5Zm-5 5h3v3h-3v-3Zm5 2h3v1h-3v-1Z" /></svg>
+              MariBank
+            </button>
+          </div>
+          <div class="payment-method-details" data-payment-details="gcash">
+            <img
+              class="gcash-qr-image"
+              src="assets/gcash-payment-qr.png"
+              alt="Fleuri GCash payment QR code. Scan with GCash and verify the recipient before paying."
+              loading="lazy"
+            />
+            <p>Scan this QR with GCash. Verify the recipient and payment amount in the app before confirming.</p>
+          </div>
+          <div class="payment-method-details" data-payment-details="maya" hidden>
+            <div class="payment-qr-placeholder" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M3 3h8v8H3V3Zm2 2v4h4V5H5Zm8-2h8v8h-8V3Zm2 2v4h4V5h-4ZM3 13h8v8H3v-8Zm2 2v4h4v-4H5Zm8-2h3v3h-3v-3Zm5 0h3v5h-3v-5Zm-5 5h3v3h-3v-3Zm5 2h3v1h-3v-1Z" /></svg>
+            </div>
+            <p>This is a QR code icon, not a scannable payment code. Contact Fleuri for Maya payment instructions.</p>
+            <button class="payment-contact-button" type="button" data-payment-contact>Contact Fleuri</button>
+          </div>
+          <div class="payment-method-details" data-payment-details="maribank" hidden>
+            <div class="payment-qr-placeholder" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M3 3h8v8H3V3Zm2 2v4h4V5H5Zm8-2h8v8h-8V3Zm2 2v4h4V5h-4ZM3 13h8v8H3v-8Zm2 2v4h4v-4H5Zm8-2h3v3h-3v-3Zm5 0h3v5h-3v-5Zm-5 5h3v3h-3v-3Zm5 2h3v1h-3v-1Z" /></svg>
+            </div>
+            <p>This is a QR code icon, not a scannable payment code. Contact Fleuri for MariBank payment instructions.</p>
+            <button class="payment-contact-button" type="button" data-payment-contact>Contact Fleuri</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <dialog class="fulfillment-dialog" id="fulfillmentDialog" aria-labelledby="fulfillmentTitle" aria-describedby="fulfillmentIntro">
+    <h2 id="fulfillmentTitle">How would you like your order?</h2>
+    <p class="fulfillment-dialog-intro" id="fulfillmentIntro">Choose delivery or pick-up before continuing to payment.</p>
+    <form id="fulfillmentForm">
+      <fieldset class="fulfillment-options" aria-label="Order fulfillment">
+        <label class="fulfillment-option">
+          <span class="fulfillment-option-icon" aria-hidden="true">🚚</span>
+          <span>Delivery</span>
+          <input type="radio" name="fulfillment" value="delivery" checked required />
+        </label>
+        <label class="fulfillment-option">
+          <span class="fulfillment-option-icon" aria-hidden="true">🚶</span>
+          <span>Pick-up</span>
+          <input type="radio" name="fulfillment" value="pickup" required />
+        </label>
+      </fieldset>
+      <p class="fulfillment-dialog-note">Delivery needs a selected CDO barangay. Contact Fleuri to confirm pick-up details.</p>
+      <div class="fulfillment-dialog-actions">
+        <button class="fulfillment-cancel" id="fulfillmentCancel" type="button">Cancel</button>
+        <button class="fulfillment-continue" type="submit">Continue to Payment</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script>
+    const openContactDialogButton = document.getElementById('openContactDialog');
+    const contactDialog = document.getElementById('contactDialog');
+    const closeContactDialogButton = document.getElementById('closeContactDialog');
+    const contactForm = document.getElementById('contactForm');
+
+    openContactDialogButton.addEventListener('click', () => {
+      contactDialog.showModal();
+      document.getElementById('contactName').focus();
+    });
+    closeContactDialogButton.addEventListener('click', () => contactDialog.close());
+    contactDialog.addEventListener('click', (event) => {
+      if (event.target === contactDialog) contactDialog.close();
+    });
+    contactForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const formData = new FormData(contactForm);
+      const name = formData.get('name').trim();
+      const email = formData.get('email').trim();
+      const message = formData.get('message').trim();
+      const subject = `Website message from ${name}`;
+      const body = `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`;
+      const mailto = `mailto:Fleuri.crochet@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      contactDialog.close();
+      window.location.href = mailto;
+    });
+
+    const deliverBox = document.querySelector('.deliver-box');
+    const locationModal = document.getElementById('locationModal');
+    const selectedLocation = document.getElementById('selected-location');
+    const locationSearch = document.getElementById('locationSearch');
+    const locationItems = document.querySelectorAll('.location-item');
+    const locationClose = document.querySelector('.location-close');
+    const fulfillmentDialog = document.getElementById('fulfillmentDialog');
+    const fulfillmentForm = document.getElementById('fulfillmentForm');
+    const fulfillmentCancel = document.getElementById('fulfillmentCancel');
+    const fulfillmentSummary = document.getElementById('fulfillmentSummary');
+    let selectedFulfillment = 'delivery';
+    let pendingDeliveryPayment = false;
+
+    function openLocationModal() {
+      locationModal.classList.add('open');
+      locationModal.setAttribute('aria-hidden', 'false');
+      deliverBox.setAttribute('aria-expanded', 'true');
+      setTimeout(() => locationSearch.focus(), 50);
+    }
+
+    function closeLocationModal() {
+      locationModal.classList.remove('open');
+      locationModal.setAttribute('aria-hidden', 'true');
+      deliverBox.setAttribute('aria-expanded', 'false');
+    }
+
+    deliverBox.addEventListener('click', (event) => {
+      event.stopPropagation();
+      if (locationModal.classList.contains('open')) {
+        closeLocationModal();
+      } else {
+        openLocationModal();
+      }
+    });
+
+    locationClose.addEventListener('click', () => {
+      pendingDeliveryPayment = false;
+      closeLocationModal();
+    });
+
+    locationModal.addEventListener('click', (event) => {
+      if (event.target === locationModal) {
+        pendingDeliveryPayment = false;
+        closeLocationModal();
+      }
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && locationModal.classList.contains('open')) {
+        pendingDeliveryPayment = false;
+        closeLocationModal();
+      }
+    });
+
+    locationItems.forEach((item) => {
+      item.addEventListener('click', () => {
+        const value = item.textContent.trim();
+        selectedLocation.textContent = value;
+        closeLocationModal();
+        if (pendingDeliveryPayment) {
+          pendingDeliveryPayment = false;
+          showPaymentMethods();
+        }
+      });
+    });
+
+    locationSearch.addEventListener('input', (event) => {
+      const query = event.target.value.trim().toLowerCase();
+      locationItems.forEach((item) => {
+        const match = item.textContent.toLowerCase().includes(query);
+        item.style.display = match ? '' : 'none';
+      });
+    });
+
+    function showPaymentMethods() {
+      const summary = selectedFulfillment === 'delivery'
+        ? `Delivery selected${selectedLocation.textContent === 'Select barangay' ? '' : ` to ${selectedLocation.textContent}`}.`
+        : 'Pick-up selected. Contact Fleuri to confirm pick-up details.';
+      fulfillmentSummary.textContent = summary;
+      fulfillmentSummary.hidden = false;
+      document.dispatchEvent(new CustomEvent('fleuri:payment-ready', {
+        detail: {
+          fulfillment: selectedFulfillment,
+          location: selectedFulfillment === 'delivery' ? selectedLocation.textContent : null
+        }
+      }));
+      qrPanel.classList.add('visible');
+      openCartDrawer();
+    }
+
+    const cartBadge = document.querySelector('[data-cart-toggle] .badge');
+    const cartDrawer = document.getElementById('cartDrawer');
+    const cartItems = document.getElementById('cartItems');
+    const cartTotal = document.getElementById('cartTotal');
+    const qrPanel = document.getElementById('qrPanel');
+    const paymentMethodButtons = document.querySelectorAll('[data-payment-method]');
+    const paymentMethodDetails = document.querySelectorAll('[data-payment-details]');
+    const cartClose = document.querySelector('.cart-close');
+    const checkoutBtn = document.querySelector('.checkout-btn');
+    const navButtons = document.querySelectorAll('.nav-link');
+    const productMenuWrap = document.getElementById('productMenuWrap');
+    const productsMenuToggle = document.getElementById('productsMenuToggle');
+    const helpCenterWrap = document.getElementById('helpCenterWrap');
+    const helpCenterToggle = document.getElementById('helpCenterToggle');
+    const helpSearchForm = document.getElementById('helpSearchForm');
+    const helpSearchInput = document.getElementById('helpSearchInput');
+    const helpTopicButtons = document.querySelectorAll('.help-topic');
+    const helpNoResults = document.getElementById('helpNoResults');
+    const productCards = document.querySelectorAll('#productGrid .product-card');
+    const productGrid = document.getElementById('productGrid');
+    const soldOutSection = document.getElementById('soldOutSection');
+    const promotionsSection = document.getElementById('promotionsSection');
+    const gourmetComingSoon = document.getElementById('gourmetComingSoon');
+    const customerReviews = document.getElementById('customerReviews');
+    const reviewPhotoGroup = document.getElementById('reviewPhotoGroup');
+    const reviewPhotoTrack = document.getElementById('reviewPhotoTrack');
+    const reviewCarouselToggle = document.getElementById('reviewCarouselToggle');
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const productsTitle = document.getElementById('productsTitle');
+    const shopMoreLink = document.getElementById('shopMoreLink');
+    const noResults = document.getElementById('noResults');
+    const cartToggle = document.querySelector('[data-cart-toggle]');
+    const searchToggle = document.querySelector('[data-search-toggle]');
+    const searchModal = document.getElementById('searchModal');
+    const searchClose = document.querySelector('.search-close');
+    const productSearch = document.getElementById('productSearch');
+    const searchResults = document.getElementById('searchResults');
+    const newsletterDialog = document.getElementById('newsletterDialog');
+    const newsletterForm = document.getElementById('newsletterForm');
+    const newsletterClose = document.getElementById('newsletterClose');
+    const newsletterDecline = document.getElementById('newsletterDecline');
+    const newsletterMethodRadios = document.querySelectorAll('input[name="contactMethod"]');
+    const newsletterEmailFields = document.getElementById('newsletterEmailFields');
+    const newsletterPhoneFields = document.getElementById('newsletterPhoneFields');
+    const newsletterStorageKey = 'fleuri-welcome-offer-dismissed-v1';
+    let cartCount = 0;
+    let cartList = [];
+    let activeCategory = 'birthdays';
+
+    if (prefersReducedMotion) {
+      reviewCarouselToggle.disabled = true;
+      reviewCarouselToggle.textContent = 'Swipe to browse';
+      reviewCarouselToggle.setAttribute('aria-label', 'Swipe horizontally to browse customer photos');
+    } else {
+      const duplicateReviewGroup = reviewPhotoGroup.cloneNode(true);
+      duplicateReviewGroup.removeAttribute('id');
+      duplicateReviewGroup.setAttribute('aria-hidden', 'true');
+      reviewPhotoTrack.appendChild(duplicateReviewGroup);
+
+      reviewCarouselToggle.addEventListener('click', () => {
+        const isPaused = reviewPhotoTrack.classList.toggle('is-paused');
+        reviewCarouselToggle.textContent = isPaused ? 'Play' : 'Pause';
+        reviewCarouselToggle.setAttribute('aria-pressed', String(isPaused));
+        reviewCarouselToggle.setAttribute(
+          'aria-label',
+          `${isPaused ? 'Play' : 'Pause'} customer photo carousel`
+        );
+      });
+    }
+
+    function closeNewsletterDialog() {
+      if (newsletterDialog.open) newsletterDialog.close();
+      try {
+        localStorage.setItem(newsletterStorageKey, 'true');
+      } catch (error) {
+        console.error('Could not remember that the welcome offer was dismissed.', error);
+      }
+    }
+
+    function setNewsletterContactMethod(method) {
+      const usePhone = method === 'phone';
+      newsletterEmailFields.hidden = usePhone;
+      newsletterPhoneFields.hidden = !usePhone;
+      newsletterEmailFields.querySelector('input').disabled = usePhone;
+      newsletterPhoneFields.querySelectorAll('input').forEach((input) => {
+        input.disabled = !usePhone;
+      });
+    }
+
+    newsletterMethodRadios.forEach((radio) => {
+      radio.addEventListener('change', () => {
+        if (radio.checked) setNewsletterContactMethod(radio.value);
+      });
+    });
+    newsletterClose.addEventListener('click', closeNewsletterDialog);
+    newsletterDecline.addEventListener('click', closeNewsletterDialog);
+    newsletterDialog.addEventListener('cancel', (event) => {
+      event.preventDefault();
+      closeNewsletterDialog();
+    });
+    newsletterDialog.addEventListener('click', (event) => {
+      if (event.target === newsletterDialog) closeNewsletterDialog();
+    });
+    newsletterForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const formData = new FormData(newsletterForm);
+      const method = formData.get('contactMethod');
+      const contactDetails = method === 'email'
+        ? `Email: ${formData.get('email')}`
+        : `Name: ${formData.get('name')}\nMobile: ${formData.get('phone')}`;
+      const subject = 'Fleuri welcome discount signup';
+      const body = `${contactDetails}\n\nRequested offer code: WELCOMETOFLEURI20%\nPlease confirm how I can use this discount on my first purchase.`;
+      const mailto = `mailto:Fleuri.crochet@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      closeNewsletterDialog();
+      window.location.href = mailto;
+    });
+
+    let shouldShowNewsletter = true;
+    try {
+      shouldShowNewsletter = localStorage.getItem(newsletterStorageKey) !== 'true';
+    } catch (error) {
+      console.error('Could not check whether the welcome offer was already dismissed.', error);
+    }
+    if (shouldShowNewsletter) {
+      setTimeout(() => {
+        if (!newsletterDialog.open) newsletterDialog.showModal();
+      }, 1200);
+    }
+
+    paymentMethodButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const selectedMethod = button.dataset.paymentMethod;
+        paymentMethodButtons.forEach((methodButton) => {
+          methodButton.setAttribute('aria-pressed', String(methodButton === button));
+        });
+        paymentMethodDetails.forEach((details) => {
+          details.hidden = details.dataset.paymentDetails !== selectedMethod;
+        });
+      });
+    });
+
+    document.querySelectorAll('[data-payment-contact]').forEach((button) => {
+      button.addEventListener('click', () => openContactDialogButton.click());
+    });
+
+    function setHelpCenterOpen(isOpen) {
+      helpCenterWrap.classList.toggle('is-open', isOpen);
+      helpCenterToggle.setAttribute('aria-expanded', String(isOpen));
+    }
+
+    function setProductMenuOpen(isOpen) {
+      productMenuWrap.classList.toggle('is-open', isOpen);
+      productsMenuToggle.setAttribute('aria-expanded', String(isOpen));
+    }
+
+    productsMenuToggle.addEventListener('click', () => {
+      setHelpCenterOpen(false);
+      setProductMenuOpen(!productMenuWrap.classList.contains('is-open'));
+    });
+
+    helpCenterToggle.addEventListener('click', () => {
+      setProductMenuOpen(false);
+      setHelpCenterOpen(!helpCenterWrap.classList.contains('is-open'));
+    });
+
+    document.addEventListener('click', (event) => {
+      if (!productMenuWrap.contains(event.target)) setProductMenuOpen(false);
+      if (!helpCenterWrap.contains(event.target)) setHelpCenterOpen(false);
+    });
+
+    function filterHelpTopics() {
+      const query = helpSearchInput.value.trim().toLowerCase();
+      let visibleTopics = 0;
+
+      helpTopicButtons.forEach((topic) => {
+        const searchableText = `${topic.textContent} ${topic.dataset.helpKeywords || ''}`.toLowerCase();
+        const matches = !query || searchableText.includes(query);
+        topic.hidden = !matches;
+        if (matches) visibleTopics += 1;
+      });
+
+      helpNoResults.hidden = visibleTopics > 0;
+    }
+
+    helpSearchForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      filterHelpTopics();
+    });
+    helpSearchInput.addEventListener('input', filterHelpTopics);
+
+    document.querySelectorAll('[data-help-query]').forEach((button) => {
+      button.addEventListener('click', () => {
+        helpSearchInput.value = button.dataset.helpQuery;
+        filterHelpTopics();
+        helpSearchInput.focus();
+      });
+    });
+
+    helpTopicButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        setHelpCenterOpen(false);
+        switch (button.dataset.helpAction) {
+          case 'track':
+            document.querySelector('[data-account-mode="track"]').click();
+            break;
+          case 'payment':
+            cartToggle.click();
+            break;
+          case 'delivery':
+            deliverBox.click();
+            break;
+          case 'contact':
+            openContactDialogButton.click();
+            break;
+          default:
+            throw new Error(`Unknown help topic action: ${button.dataset.helpAction}`);
+        }
+      });
+    });
+
+    document.querySelectorAll('#promotionsSection .promotion-card').forEach((card) => {
+      const clickHandler = (event) => {
+        if (event.target.closest('.product-description')) return;
+        addToCart(
+          card.dataset.product,
+          card.dataset.price,
+          card.querySelector('img'),
+          card.dataset.cartNote || 'Promotion availability and terms must be confirmed with Fleuri before payment.',
+          card
+        );
+      };
+
+      card.addEventListener('click', clickHandler);
+      card.addEventListener('keydown', (event) => {
+        if (event.target.closest('.product-description')) return;
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          clickHandler(event);
+        }
+      });
+    });
+
+    function filterProducts() {
+      let visibleCount = 0;
+      const query = productSearch ? productSearch.value.trim().toLowerCase() : '';
+      const showGourmetComingSoon = activeCategory === 'gourmet';
+
+      productGrid.hidden = showGourmetComingSoon;
+      soldOutSection.hidden = showGourmetComingSoon;
+      promotionsSection.hidden = showGourmetComingSoon;
+      gourmetComingSoon.hidden = !showGourmetComingSoon;
+      customerReviews.hidden = showGourmetComingSoon;
+      productsTitle.textContent = showGourmetComingSoon ? 'Gourmet Delights' : 'Best Sellers';
+      shopMoreLink.hidden = showGourmetComingSoon;
+
+      productCards.forEach((card) => {
+        const categoryMatch = activeCategory === 'all' || card.dataset.category === activeCategory;
+        const searchMatch = !query || card.dataset.product.toLowerCase().includes(query) || card.dataset.category.toLowerCase().includes(query);
+        const shouldShow = categoryMatch && searchMatch;
+        card.hidden = !shouldShow;
+        if (shouldShow) visibleCount += 1;
+      });
+
+      if (noResults) {
+        noResults.classList.toggle('visible', visibleCount === 0);
+      }
+    }
+
+    function renderSearchSuggestions() {
+      const query = productSearch.value.trim().toLowerCase();
+
+      if (!query) {
+        searchResults.innerHTML = '<div class="search-empty">Try a product name like “Rose”, “Birthday”, or “Flower”.</div>';
+        return;
+      }
+
+      const matches = [...productCards].filter((card) => {
+        const text = `${card.dataset.product} ${card.dataset.category}`.toLowerCase();
+        return text.includes(query);
+      }).slice(0, 6);
+
+      if (!matches.length) {
+        searchResults.innerHTML = '<div class="search-empty">No matching gifts found. Try another keyword.</div>';
+        return;
+      }
+
+      searchResults.innerHTML = '';
+      matches.forEach((card) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'search-result';
+        button.textContent = card.dataset.product;
+        button.addEventListener('click', () => {
+          activeCategory = card.dataset.category;
+          navButtons.forEach((navButton) => {
+            navButton.classList.toggle('active', navButton.dataset.category === activeCategory);
+          });
+          setProductMenuOpen(false);
+          setHelpCenterOpen(false);
+          productSearch.value = card.dataset.product;
+          filterProducts();
+          closeSearchModal();
+          addToCart(card.dataset.product, card.dataset.price, card.querySelector('img'), '', button);
+        });
+        searchResults.appendChild(button);
+      });
+    }
+
+    function openSearchModal() {
+      searchModal.classList.add('open');
+      searchModal.setAttribute('aria-hidden', 'false');
+      setTimeout(() => productSearch.focus(), 50);
+      renderSearchSuggestions();
+    }
+
+    function closeSearchModal() {
+      searchModal.classList.remove('open');
+      searchModal.setAttribute('aria-hidden', 'true');
+    }
+
+    function openCartDrawer() {
+      cartDrawer.classList.add('open');
+      cartDrawer.setAttribute('aria-hidden', 'false');
+    }
+
+    function closeCartDrawer() {
+      cartDrawer.classList.remove('open');
+      cartDrawer.setAttribute('aria-hidden', 'true');
+    }
+
+    function renderCart() {
+      cartItems.innerHTML = '';
+      let total = 0;
+
+      cartList.forEach((item, index) => {
+        total += item.price;
+        const row = document.createElement('div');
+        row.className = 'cart-item';
+        row.innerHTML = `
+          <div class="cart-item-left">
+            <div>
+              <div class="cart-item-name"></div>
+              <div class="cart-item-note"></div>
+            </div>
+          </div>
+          <div class="cart-item-right">
+            <div class="cart-item-price"></div>
+            <button class="remove-item" type="button" data-index="${index}">Remove</button>
+          </div>
+        `;
+
+        const itemName = row.querySelector('.cart-item-name');
+        itemName.textContent = item.name;
+        const itemNote = row.querySelector('.cart-item-note');
+        itemNote.textContent = item.note || '';
+        itemNote.hidden = !item.note;
+        row.querySelector('.cart-item-price').textContent = item.price === 0 ? 'Offer' : `₱${item.price}`;
+        const itemImage = document.createElement('img');
+        itemImage.className = 'cart-item-image';
+        itemImage.src = item.image;
+        itemImage.alt = item.imageAlt;
+        row.querySelector('.cart-item-left').prepend(itemImage);
+
+        const removeButton = row.querySelector('.remove-item');
+        removeButton.addEventListener('click', () => {
+          cartList.splice(index, 1);
+          cartCount = Math.max(cartCount - 1, 0);
+          cartBadge.textContent = cartCount;
+          renderCart();
+        });
+        cartItems.appendChild(row);
+      });
+
+      cartTotal.textContent = `₱${total}`;
+      if (!cartList.length) {
+        cartItems.innerHTML = '<div class="cart-item"><div class="cart-item-name">No items yet</div></div>';
+      }
+    }
+
+    function showToast(message) {
+      const toast = document.createElement('div');
+      toast.textContent = message;
+      toast.style.position = 'fixed';
+      toast.style.right = '20px';
+      toast.style.bottom = '20px';
+      toast.style.background = 'linear-gradient(100deg, #63477a, #d65370)';
+      toast.style.color = '#fff';
+      toast.style.padding = '10px 14px';
+      toast.style.borderRadius = '999px';
+      toast.style.fontSize = '12px';
+      toast.style.fontWeight = '700';
+      toast.style.boxShadow = '0 10px 24px rgba(0,0,0,0.18)';
+      toast.style.zIndex = '2000';
+      document.body.appendChild(toast);
+
+      setTimeout(() => {
+        toast.remove();
+      }, 1500);
+    }
+
+    function showAddToCartCelebration(sourceElement) {
+      const bounds = sourceElement ? sourceElement.getBoundingClientRect() : null;
+      const popup = document.createElement('div');
+      popup.className = 'add-to-cart-pop';
+      popup.setAttribute('role', 'status');
+      popup.setAttribute('aria-live', 'polite');
+      popup.style.left = `${Math.max(85, Math.min(window.innerWidth - 85, bounds ? bounds.left + bounds.width / 2 : window.innerWidth / 2))}px`;
+      popup.style.top = `${Math.max(105, Math.min(window.innerHeight - 90, bounds ? bounds.top + bounds.height / 2 : window.innerHeight / 2))}px`;
+
+      const icons = document.createElement('span');
+      icons.className = 'add-to-cart-pop-icons';
+      icons.setAttribute('aria-hidden', 'true');
+      icons.textContent = '✨ 🌸 💖';
+
+      const message = document.createElement('span');
+      message.textContent = 'Yay! Added to cart!';
+
+      popup.append(icons, message);
+      document.body.appendChild(popup);
+      setTimeout(() => popup.remove(), 1500);
+    }
+
+    function addToCart(productName, productPrice, productImage, note = '', sourceElement = null) {
+      cartCount += 1;
+      cartBadge.textContent = cartCount;
+      cartList.push({
+        name: productName,
+        price: Number(productPrice),
+        image: productImage.getAttribute('src'),
+        imageAlt: productImage.alt || `${productName} product image`,
+        note
+      });
+      renderCart();
+      openCartDrawer();
+
+      showToast(`${productName} added to cart for ₱${productPrice}`);
+      showAddToCartCelebration(sourceElement);
+    }
+
+    navButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        activeCategory = button.dataset.category;
+        navButtons.forEach((navButton) => {
+          navButton.classList.toggle('active', navButton === button);
+        });
+        setProductMenuOpen(false);
+        setHelpCenterOpen(false);
+        filterProducts();
+      });
+    });
+
+    document.querySelector('.more-gifts-card').addEventListener('click', () => {
+      const moreGiftsButton = document.querySelector('.nav-link[data-category="more"]');
+      moreGiftsButton.click();
+    });
+
+    cartToggle.addEventListener('click', openCartDrawer);
+    searchToggle.addEventListener('click', openSearchModal);
+    cartClose.addEventListener('click', closeCartDrawer);
+    fulfillmentCancel.addEventListener('click', () => fulfillmentDialog.close());
+    fulfillmentForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      selectedFulfillment = new FormData(fulfillmentForm).get('fulfillment');
+      fulfillmentDialog.close();
+
+      if (selectedFulfillment === 'delivery' && selectedLocation.textContent === 'Select barangay') {
+        pendingDeliveryPayment = true;
+        openLocationModal();
+        return;
+      }
+
+      showPaymentMethods();
+    });
+    checkoutBtn.addEventListener('click', () => {
+      fulfillmentDialog.showModal();
+    });
+
+    searchClose.addEventListener('click', closeSearchModal);
+    searchModal.addEventListener('click', (event) => {
+      if (event.target === searchModal) closeSearchModal();
+    });
+    productSearch.addEventListener('input', () => {
+      filterProducts();
+      renderSearchSuggestions();
+    });
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') {
+        if (locationModal.classList.contains('open')) closeLocationModal();
+        if (searchModal.classList.contains('open')) closeSearchModal();
+        if (cartDrawer.classList.contains('open')) closeCartDrawer();
+        setProductMenuOpen(false);
+        setHelpCenterOpen(false);
+      }
+    });
+
+    productCards.forEach((card) => {
+      const clickHandler = (event) => {
+        if (event.target.closest('.product-description')) return;
+        addToCart(card.dataset.product, card.dataset.price, card.querySelector('img'), '', card);
+      };
+
+      card.addEventListener('click', clickHandler);
+      card.addEventListener('keydown', (event) => {
+        if (event.target.closest('.product-description')) return;
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          clickHandler(event);
+        }
+      });
+    });
+
+    filterProducts();
+    renderSearchSuggestions();
+  </script>
+  <script src="account-pos.js"></script>
+</body>
+</html>
